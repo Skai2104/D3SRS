@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Intent callIntent;
 
-                /*if (mCallPermissionGranted) {
+                if (mCallPermissionGranted) {
                     callIntent = new Intent(Intent.ACTION_CALL);
                     callIntent.setData(Uri.parse("tel:0174087450"));
                     if (ActivityCompat.checkSelfPermission(MainActivity.this,
@@ -138,9 +138,11 @@ public class MainActivity extends AppCompatActivity {
                     callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:0174087450"));
                     startActivity(callIntent);
-                }*/
+                }
 
-                sendSOS();
+                for (User user : mUserList) {
+                    sendSOS(user.userId);
+                }
 
                 return true;
             }
@@ -211,10 +213,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void sendSOS() {
+    public void sendSOS(final String userId) {
         if (mFirebaseUser != null) {
-            final String message = "SOS testing";
-            mUserId = mUserList.get(0).userId;
+            final String message = "Someone nearby needs your help! Click to check it out!";
 
             mFirestore.collection("Users").document(mCurrentUserId).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -225,10 +226,11 @@ public class MainActivity extends AppCompatActivity {
                             Map<String, Object> SOSMap = new HashMap<>();
                             SOSMap.put("message", message);
                             SOSMap.put("from", mCurrentUserName);
-                            SOSMap.put("latitude", mLatitude);
-                            SOSMap.put("longitude", mLongitude);
+                            SOSMap.put("fromId", mCurrentUserId);
+                            SOSMap.put("latitude", String.valueOf(mLatitude));
+                            SOSMap.put("longitude", String.valueOf(mLongitude));
 
-                            mFirestore.collection("Users").document(mUserId).collection("SOSNotification")
+                            mFirestore.collection("Users").document(userId).collection("SOSNotification")
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
