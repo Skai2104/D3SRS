@@ -21,6 +21,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         String dataFrom = remoteMessage.getData().get("from_user");
         String latitudeStr = remoteMessage.getData().get("latitude");
         String longitudeStr = remoteMessage.getData().get("longitude");
+        String datetime = remoteMessage.getData().get("datetime");
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -47,6 +48,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         resultIntent.putExtra("from_user", dataFrom);
         resultIntent.putExtra("latitude", latitudeStr);
         resultIntent.putExtra("longitude", longitudeStr);
+        resultIntent.putExtra("datetime", datetime);
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(
                 this,

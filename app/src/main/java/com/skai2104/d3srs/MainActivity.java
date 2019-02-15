@@ -39,7 +39,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,20 +99,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            try {
-                mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            mLatitude = location.getLatitude();
-                            mLongitude = location.getLongitude();
-                        } else
-                            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+            mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        mLatitude = location.getLatitude();
+                        mLongitude = location.getLongitude();
+                    } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                        checkPermission();
+
+                        return;
                     }
-                });
-            } catch (SecurityException e) {
-                Log.e("Security Exception", e.getMessage());
-            }
+                    mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+                }
+            });
         }
 
         findViewById(R.id.skipBtn).setOnClickListener(new View.OnClickListener() {
@@ -126,19 +131,14 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Intent callIntent;
 
-                if (mCallPermissionGranted) {
-                    callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:0174087450"));
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                            Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        return false;
-                    }
-                    startActivity(callIntent);
-                } else {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:0174087450"));
-                    startActivity(callIntent);
+                } else {
+                    callIntent = new Intent(Intent.ACTION_CALL);
                 }
+                callIntent.setData(Uri.parse("tel:0174087450"));
+                startActivity(callIntent);
 
                 for (User user : mUserList) {
                     sendSOS(user.userId);
@@ -221,6 +221,10 @@ public class MainActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT);
+                            Date date = new Date();
+                            String dateTime = df.format(date);
+
                             mCurrentUserName = documentSnapshot.getString("name");
 
                             Map<String, Object> SOSMap = new HashMap<>();
@@ -229,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
                             SOSMap.put("fromId", mCurrentUserId);
                             SOSMap.put("latitude", String.valueOf(mLatitude));
                             SOSMap.put("longitude", String.valueOf(mLongitude));
+                            SOSMap.put("datetime", String.valueOf(dateTime));
 
                             mFirestore.collection("Users").document(userId).collection("SOSNotification")
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

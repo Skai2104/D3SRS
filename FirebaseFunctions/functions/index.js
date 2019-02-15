@@ -15,6 +15,7 @@ exports.sendNotification = functions.firestore
 										let from_message;
 										let latitude;
 										let longitude;
+										let datetime;
 
 										return admin.firestore().collection("Users").doc(user_id)
 																.collection("SOSNotification").doc(notification_id)
@@ -24,6 +25,7 @@ exports.sendNotification = functions.firestore
 																	from_message = queryResult.data().message;
 																	latitude = queryResult.data().latitude;
 																	longitude = queryResult.data().longitude;
+																	datetime = queryResult.data().datetime;
 
 																	const from_data = admin.firestore().collection("Users").doc(from_user_id).get();
 																	const to_data = admin.firestore().collection("Users").doc(user_id).get();
@@ -46,7 +48,8 @@ exports.sendNotification = functions.firestore
 																			message: from_message,
 																			from_user: from_user,
 																			latitude: latitude,
-																			longitude: longitude
+																			longitude: longitude,
+																			datetime: datetime
 																		} 
 																	};
 
