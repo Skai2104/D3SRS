@@ -13,6 +13,13 @@
         android:padding="16dp">
 
         <EditText
+            android:id="@+id/nameET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="Name"/>
+
+        <EditText
             android:id="@+id/emailET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,16 +33,29 @@
             android:inputType="textPassword"
             android:hint="Password"/>
 
-        <Button
-            android:id="@+id/signUpBtn"
+        <EditText
+            android:id="@+id/phoneET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up"/>
+            android:inputType="phone"
+            android:hint="Phone"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/registerBtn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"/>
+            android:text="Register"/>
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"/>
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>
