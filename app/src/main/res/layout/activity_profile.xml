@@ -32,5 +32,12 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header">
 
+        <Button
+            android:id="@+id/logoutBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="15dp"
+            android:text="Logout"/>
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

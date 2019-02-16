@@ -6,10 +6,27 @@
     android:layout_margin="16dp"
     tools:context=".SettingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_margin="30dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/setUpGroupBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="30dp"
+            android:text="Set Up My Group"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
+        <Button
+            android:id="@+id/accountSettingsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="30dp"
+            android:text="Account Settings"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+    </LinearLayout>
 
 </RelativeLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SetUpGroupActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/navigation_action_bar"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="46dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/fromExistingUserBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="30dp"
+                android:text="Add from existing users"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Note: If your group members already register themselves in this system, kindly choose this option as they can receive your status updates via both push notifications and SMS."
+                android:textAlignment="center"/>
+
+            <View
+                style="@style/HorizontalDivider"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/byPhoneNumberBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="30dp"
+                android:text="Add by phone numbers"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Note: They will only receive your status update via SMS because they have yet to register themselves in this system."
+                android:textAlignment="center"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

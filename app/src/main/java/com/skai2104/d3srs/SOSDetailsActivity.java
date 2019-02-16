@@ -55,10 +55,6 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
 
     private GeoApiContext mGeoApiContext = null;
 
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private LocationRequest mLocationRequest;
-    private LocationCallback mLocationCallback;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +76,6 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
 
         if (longitudeStr != null)
             mLongitude = Double.valueOf(longitudeStr);
-
-        // Todo: delete
-        mLatitude = 5.366996;
-        mLongitude = 100.460656;
 
         Geocoder geocoder = new Geocoder(SOSDetailsActivity.this, Locale.getDefault());
         List<Address> addressList;
@@ -206,11 +198,11 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
 
-        try{
+        try {
             if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.e(TAG, "onClick: NullPointerException: Couldn't open map." + e.getMessage() );
             Toast.makeText(this, "Couldn't open map", Toast.LENGTH_SHORT).show();
         }

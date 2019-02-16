@@ -88,6 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         userMap.put("name", mName);
                                         userMap.put("email", mEmail);
                                         userMap.put("phone", mPhone);
+                                        userMap.put("safety_status", "Unknown");
                                         userMap.put("token_id", mTokenId);
 
                                         mFirestore.collection("Users").document(userId).set(userMap)

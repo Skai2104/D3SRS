@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendSOS(final String userId) {
         if (mFirebaseUser != null) {
-            final String message = "Someone nearby needs your help! Click to check it out!";
+            final String message = "Someone nearby needs your help!";
 
             mFirestore.collection("Users").document(mCurrentUserId).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Toast.makeText(MainActivity.this, "Notification sent", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "SOS sent!", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

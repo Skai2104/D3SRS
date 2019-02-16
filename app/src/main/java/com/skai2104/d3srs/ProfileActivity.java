@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,12 +37,12 @@ public class ProfileActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
-    private TextView mNameTV;
+    private TextView mNameTV, mEmailTV;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
 
-    private String mUserId;
+    private String mUserId, mUserName, mUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
         View header = mNavigationView.getHeaderView(0);
 
         mNameTV = header.findViewById(R.id.nameTV);
+        mEmailTV = header.findViewById(R.id.emailTV);
 
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mToolbar = findViewById(R.id.nav_action_bar);
@@ -72,6 +74,56 @@ public class ProfileActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         mUserId = mAuth.getCurrentUser().getUid();
+
+        findViewById(R.id.logoutBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+
+                builder.setTitle("Logout")
+                        .setMessage("Are you sure you want to logout?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Map<String, Object> tokenMapRemove = new HashMap<>();
+                                tokenMapRemove.put("token_id", FieldValue.delete());
+
+                                mFirestore.collection("Users").document(mUserId).update(tokenMapRemove)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                mAuth.signOut();
+
+                                                Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+                                                startActivity(i);
+                                            }
+                                        });
+                                Toast.makeText(ProfileActivity.this, "Logged out", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+
+                mDrawerLayout.closeDrawers();
+            }
+        });
+
+        mFirestore.collection("Users").document(mUserId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        mUserName = documentSnapshot.getString("name");
+                        mUserEmail = documentSnapshot.getString("email");
+
+                        mNameTV.setText(mUserName);
+                        mEmailTV.setText(mUserEmail);
+                    }
+                });
     }
 
     @Override
@@ -107,8 +159,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
-        Class fragmentClass = null;
-        boolean logout = false;
+        Class fragmentClass;
 
         switch (menuItem.getItemId()) {
             case R.id.navHome:
@@ -127,61 +178,24 @@ public class ProfileActivity extends AppCompatActivity {
                 fragmentClass = SOSListFragment.class;
                 break;
 
-            case R.id.navLogout:
-                logout = true;
-                break;
-
             default:
                 fragmentClass = HomeFragment.class;
         }
 
-        if (!logout) {
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.mainLayout, fragment).commit();
-
-            // Highlight the selected item has been done by NavigationView
-            menuItem.setChecked(true);
-            // Set action bar title
-            setTitle(menuItem.getTitle());
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Map<String, Object> tokenMapRemove = new HashMap<>();
-                            tokenMapRemove.put("token_id", FieldValue.delete());
-
-                            mFirestore.collection("Users").document(mUserId).update(tokenMapRemove)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            mAuth.signOut();
-
-                                            Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
-                                            startActivity(i);
-                                        }
-                                    });
-                            Toast.makeText(ProfileActivity.this, "Logged out", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .show();
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.mainLayout, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title
+        setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawerLayout.closeDrawers();
     }
