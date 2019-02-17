@@ -10,9 +10,11 @@
             android:icon="@mipmap/round_settings_black_24"/>
 
         <item android:id="@+id/navMissingPersons"
-            android:title="Missing Persons"/>
+            android:title="Missing Persons"
+            android:icon="@mipmap/round_search_black_24"/>
 
         <item android:id="@+id/navSOSList"
-            android:title="SOS List"/>
+            android:title="SOS List"
+            android:icon="@mipmap/round_report_black_24"/>
     </group>
 </menu>
