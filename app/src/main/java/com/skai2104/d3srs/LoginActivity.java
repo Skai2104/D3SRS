@@ -1,7 +1,11 @@
 package com.skai2104.d3srs;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +13,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,9 +38,14 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
 
     private String mTokenId;
+    private double mLatitude, mLongitude;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +72,12 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.loginBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Toast.makeText(LoginActivity.this, String.valueOf(mLatitude) + "," + String.valueOf(mLongitude), Toast.LENGTH_SHORT).show();
                 login();
             }
         });
+
+        getCurrentLocation();
     }
 
     public void login() {
@@ -81,10 +98,12 @@ public class LoginActivity extends AppCompatActivity {
                                         mTokenId = instanceIdResult.getToken();
                                         String current_id = mAuth.getCurrentUser().getUid();
 
-                                        Map<String, Object> tokenMap = new HashMap<>();
-                                        tokenMap.put("token_id", mTokenId);
+                                        Map<String, Object> updatedInfoMap = new HashMap<>();
+                                        updatedInfoMap.put("token_id", mTokenId);
+                                        updatedInfoMap.put("latitude", String.valueOf(mLatitude));
+                                        updatedInfoMap.put("longitude", String.valueOf(mLongitude));
 
-                                        mFirestore.collection("Users").document(current_id).update(tokenMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        mFirestore.collection("Users").document(current_id).update(updatedInfoMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
@@ -123,6 +142,52 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    public void getCurrentLocation() {
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(20 * 1000);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null)
+                    return;
+
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        mLatitude = location.getLatitude();
+                        mLongitude = location.getLongitude();
+                    }
+                }
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    mLatitude = location.getLatitude();
+                    mLongitude = location.getLongitude();
+                } else if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+            }
+        });
     }
 
     @Override

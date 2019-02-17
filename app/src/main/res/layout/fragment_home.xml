@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
     tools:context=".HomeFragment">
 
     <LinearLayout
@@ -12,16 +15,17 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/sendSOSBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SOS"
-            android:textStyle="bold"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            android:text="Hold to send SOS"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:background="@android:color/holo_red_dark"/>
 
         <View
             style="@style/HorizontalDivider"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -41,21 +45,31 @@
                     android:text="My Safety Status:"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
-                <Spinner
-                    android:id="@+id/statusSpinner"
+                <RelativeLayout
+                    android:id="@+id/spinnerLayout"
                     android:layout_width="0dp"
-                    android:layout_weight="1.5"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="20dp"
-                    android:gravity="center"/>
+                    android:layout_marginRight="10dp">
+
+                    <Spinner
+                        android:id="@+id/statusSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:gravity="center" />
+                </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
 
         <Button
+            android:id="@+id/sendStatusBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:layout_marginTop="10dp"
             android:text="Send to group members"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
@@ -69,19 +83,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My Group"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
         <RelativeLayout
+            android:id="@+id/groupListLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
 
-            <ScrollView
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/groupListRV"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
 
 
-            </ScrollView>
+            </android.support.v7.widget.RecyclerView>
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/addGroupBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Click here to add group member"
+            android:visibility="gone"/>
     </LinearLayout>
 </RelativeLayout>

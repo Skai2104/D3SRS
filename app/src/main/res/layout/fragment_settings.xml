@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="30dp"
-            android:text="Set Up My Group"
+            android:text="Group Settings"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
 
         <Button

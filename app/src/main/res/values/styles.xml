@@ -14,4 +14,10 @@
         <item name="android:layout_height">1dp</item>
     </style>
 
+    <style name="PopupTheme" parent="ThemeOverlay.AppCompat.Light">
+        <!-- Text color of overflow menu items -->
+        <!--<item name="android:textColorPrimary"></item>-->
+        <!-- Background of overflow menu -->
+        <!--<item name="android:background"></item>-->
+    </style>
 </resources>

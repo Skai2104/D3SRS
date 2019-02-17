@@ -13,7 +13,7 @@
         <TextView
             android:id="@+id/nicknameTV"
             android:layout_width="0dp"
-            android:layout_weight="14"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
@@ -25,11 +25,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:background="#B0C4DE"/>
     </LinearLayout>
 </RelativeLayout>

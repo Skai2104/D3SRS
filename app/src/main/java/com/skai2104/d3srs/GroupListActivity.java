@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +27,8 @@ import javax.annotation.Nullable;
 public class GroupListActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private RecyclerView mGroupListRV;
+    private TextView mNoMemberTV;
+    private ProgressBar mProgressBar;
 
     private String mCurrentUserId;
 
@@ -41,6 +45,12 @@ public class GroupListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_list);
 
         mGroupListRV = findViewById(R.id.groupListRV);
+        mNoMemberTV = findViewById(R.id.noMemberTV);
+        mProgressBar = findViewById(R.id.progressBar);
+
+        mGroupListRV.setVisibility(View.GONE);
+        mNoMemberTV.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -71,6 +81,8 @@ public class GroupListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        mProgressBar.setVisibility(View.VISIBLE);
+
         mFirebaseUser = mAuth.getCurrentUser();
 
         if (mFirebaseUser != null) {
@@ -93,6 +105,15 @@ public class GroupListActivity extends AppCompatActivity {
 
                                         mAdapter.notifyDataSetChanged();
                                     }
+                                }
+                                mProgressBar.setVisibility(View.GONE);
+
+                                if (mGroupMemberList.isEmpty()) {
+                                    mGroupListRV.setVisibility(View.GONE);
+                                    mNoMemberTV.setVisibility(View.VISIBLE);
+                                } else {
+                                    mGroupListRV.setVisibility(View.VISIBLE);
+                                    mNoMemberTV.setVisibility(View.GONE);
                                 }
                             }
                         }

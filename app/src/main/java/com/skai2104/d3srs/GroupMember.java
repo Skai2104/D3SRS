@@ -1,12 +1,13 @@
 package com.skai2104.d3srs;
 
 public class GroupMember {
-    private String mName, mEmail, mPhone, mNickname, mUserId, mDocId, mType;
+    // mDatetime is the date and time where the latest status update is sent
+    private String mName, mEmail, mPhone, mNickname, mUserId, mDocId, mType, mStatus, mLatitude, mLongitude, mDateTime;
 
     public GroupMember() {
     }
 
-    public GroupMember(String name, String email, String phone, String nickname, String userId, String docId, String type) {
+    public GroupMember(String name, String email, String phone, String nickname, String userId, String docId, String type, String status, String latitude, String longitude, String datetime) {
         mName = name;
         mEmail = email;
         mPhone = phone;
@@ -14,6 +15,10 @@ public class GroupMember {
         mUserId = userId;
         mDocId = docId;
         mType = type;
+        mStatus = status;
+        mLatitude = latitude;
+        mLongitude = longitude;
+        mDateTime = datetime;
     }
 
     public String getName() {
@@ -44,6 +49,22 @@ public class GroupMember {
         return mType;
     }
 
+    public String getStatus() {
+        return mStatus;
+    }
+
+    public String getLatitude() {
+        return mLatitude;
+    }
+
+    public String getLongitude() {
+        return mLongitude;
+    }
+
+    public String getDateTime() {
+        return mDateTime;
+    }
+
     public void setName(String name) {
         mName = name;
     }
@@ -70,5 +91,21 @@ public class GroupMember {
 
     public void setType(String type) {
         mType = type;
+    }
+
+    public void setStatus(String status) {
+        mStatus = status;
+    }
+
+    public void setLatitude(String latitude) {
+        mLatitude = latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        mLongitude = longitude;
+    }
+
+    public void setDateTime(String dateTime) {
+        mDateTime = dateTime;
     }
 }

@@ -1,83 +1,95 @@
 package com.skai2104.d3srs;
 
-import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
-import com.google.maps.model.DirectionsResult;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class StatusDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    private static final String TAG = "SOS Details Activity";
+    private static final String TAG = "Status Details Activity";
 
-    private TextView mNameTV, mLocationTV, mDateTimeTV;
+    private TextView mStatusTV, mLocationTV, mDateTimeTV;
+    private Toolbar mToolbar;
     private MapView mMapView;
 
     private double mLatitude = 0.0, mLongitude = 0.0;
-    private String mDataFrom;
+    private String mName;
 
     private GeoApiContext mGeoApiContext = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sosdetails);
+        setContentView(R.layout.activity_status_details);
 
-        mNameTV = findViewById(R.id.nameTV);
+        mStatusTV = findViewById(R.id.statusTV);
         mLocationTV = findViewById(R.id.locationTV);
         mDateTimeTV = findViewById(R.id.dateTimeTV);
         mMapView = findViewById(R.id.mapView);
 
-        mDataFrom = getIntent().getStringExtra("from_user");
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String userId = getIntent().getStringExtra("userId");
+        mName = getIntent().getStringExtra("from_user");
+        String status = getIntent().getStringExtra("status");
         String latitudeStr = getIntent().getStringExtra("latitude");
         String longitudeStr = getIntent().getStringExtra("longitude");
-        String dateTime = getIntent().getStringExtra("datetime");
+        String datetime = getIntent().getStringExtra("datetime");
+
+        getSupportActionBar().setTitle(mName);
 
         if (latitudeStr != null)
-            mLatitude = Double.valueOf(latitudeStr);
+            if (!latitudeStr.isEmpty())
+                mLatitude = Double.valueOf(latitudeStr);
 
         if (longitudeStr != null)
-            mLongitude = Double.valueOf(longitudeStr);
+            if (!longitudeStr.isEmpty())
+                mLongitude = Double.valueOf(longitudeStr);
 
-        Geocoder geocoder = new Geocoder(SOSDetailsActivity.this, Locale.getDefault());
+        String color = "#B0C4DE";
+        switch (status) {
+            case "Unknown":
+                color = "#B0C4DE";
+                break;
+
+            case "Safe":
+                color = "#32CD32";
+                break;
+
+            case "Waiting for help":
+                color = "#FF8C00";
+                break;
+        }
+
+        Geocoder geocoder = new Geocoder(StatusDetailsActivity.this, Locale.getDefault());
         List<Address> addressList;
         String address = "";
         try {
@@ -91,6 +103,7 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
                 }
                 address = returnedAddressStr.toString();
             } else {
+                address = "Location not available.";
                 Log.d("Current address error", "No address returned");
             }
         } catch (IOException e) {
@@ -98,24 +111,22 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
             Log.e("GeocoderException", e.getMessage());
         }
 
-        mNameTV.setText(mDataFrom);
+        if (datetime == null) {
+            datetime = "N/A";
+        }
+
+        mStatusTV.setText(status);
+        mStatusTV.setBackgroundColor(Color.parseColor(color));
         mLocationTV.setText(address);
-        mDateTimeTV.setText(dateTime);
+        mDateTimeTV.setText(datetime);
         mLocationTV.setMovementMethod(new ScrollingMovementMethod());
 
         initGoogleMap(savedInstanceState);
 
-        findViewById(R.id.backBtn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.openInMapsBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-            }
-        });
-
-        findViewById(R.id.directionBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToLocation();
+                openInGoogleMaps();
             }
         });
     }
@@ -171,7 +182,7 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
         LatLng location = new LatLng(mLatitude, mLongitude);
         float zoomLevel = 15.0f;
 
-        map.addMarker(new MarkerOptions().position(location).title("The location of " + mDataFrom));
+        map.addMarker(new MarkerOptions().position(location).title("The location of " + mName));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
     }
 
@@ -193,8 +204,46 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
         mMapView.onLowMemory();
     }
 
-    public void navigateToLocation() {
-        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mLatitude + "," + mLongitude);
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.status_details_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.requestLlBtn:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Request Live Location")
+                        .setMessage("Please select the duration of the live location")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void openInGoogleMaps() {
+        Uri gmmIntentUri = Uri.parse("geo:" + mLatitude + "," + mLongitude + "?q=" + mLatitude + "," + mLongitude + "(The location of " + mName + ")");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
 

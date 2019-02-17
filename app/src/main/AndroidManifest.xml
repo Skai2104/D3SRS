@@ -18,20 +18,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GroupMemberDetailsActivity"></activity>
+        <activity android:name=".StatusDetailsActivity">
+            <intent-filter>
+                <action android:name="com.skai2104.d3srs.TARGETSTATUSNOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".GroupMemberDetailsActivity" />
         <activity android:name=".GroupListActivity" />
         <activity android:name=".AddByPhoneNumbersActivity" />
         <activity android:name=".AddFromExistingUsersActivity" />
         <activity android:name=".SetUpGroupActivity" />
         <activity android:name=".SOSDetailsActivity">
             <intent-filter>
-                <action android:name="com.skai2104.d3srs.TARGETNOTIFICATION" />
+                <action android:name="com.skai2104.d3srs.TARGETSOSNOTIFICATION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".ProfileActivity" />-->
-        <activity android:name=".ProfileActivity">
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                             SOSMap.put("fromId", mCurrentUserId);
                             SOSMap.put("latitude", String.valueOf(mLatitude));
                             SOSMap.put("longitude", String.valueOf(mLongitude));
-                            SOSMap.put("datetime", String.valueOf(dateTime));
+                            SOSMap.put("datetime", dateTime);
 
                             mFirestore.collection("Users").document(userId).collection("SOSNotification")
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
