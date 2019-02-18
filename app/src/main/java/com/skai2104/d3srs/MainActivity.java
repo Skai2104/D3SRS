@@ -56,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private String[] mPermissionList = {
             Manifest.permission.CALL_PHONE,
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_PHONE_STATE
     };
     private double mLatitude, mLongitude;
 
@@ -120,9 +122,24 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.skipBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(i);
-                finish();
+                if (mFirebaseUser != null) {
+                    Map<String, Object> updateLocationMap = new HashMap<>();
+                    updateLocationMap.put("latitude", String.valueOf(mLatitude));
+                    updateLocationMap.put("longitude", String.valueOf(mLongitude));
+
+                    mFirestore.collection("Users").document(mCurrentUserId).update(updateLocationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    });
+                } else {
+                    Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
 

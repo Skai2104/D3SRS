@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +67,8 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
 
+    private SmsManager mSmsManager;
+
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
@@ -74,7 +79,7 @@ public class HomeFragment extends Fragment {
     private List<User> mUserList;
     private GroupListMainRecyclerAdapter mAdapter;
     private User mCurrentUser;
-    private double mLatitude, mLongitude;
+    private double mLatitude = 0.0, mLongitude = 0.0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -94,6 +99,8 @@ public class HomeFragment extends Fragment {
         mGroupListLayout = mView.findViewById(R.id.groupListLayout);
         mSpinnerLayout = mView.findViewById(R.id.spinnerLayout);
         mAddGroupBtn = mView.findViewById(R.id.addGroupBtn);
+
+        mSmsManager = SmsManager.getDefault();
 
         mGroupListLayout.setVisibility(View.GONE);
         mAddGroupBtn.setVisibility(View.GONE);
@@ -162,7 +169,7 @@ public class HomeFragment extends Fragment {
                 updateStatusMap.put("latitude", String.valueOf(mLatitude));
                 updateStatusMap.put("longitude", String.valueOf(mLongitude));
                 updateStatusMap.put("status", String.valueOf(mStatusSpinner.getSelectedItem()));
-                
+
                 mFirestore.collection("Users").document(mCurrentUserId).update(updateStatusMap)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -172,7 +179,7 @@ public class HomeFragment extends Fragment {
                         });
 
                 for (GroupMember groupMember : mGroupMemberUpdatedList) {
-                    sendStatusUpdate(groupMember.getUserId(), dateTime, String.valueOf(mLatitude), String.valueOf(mLongitude), String.valueOf(mStatusSpinner.getSelectedItem()));
+                    sendStatusUpdate(groupMember.getUserId(), dateTime, String.valueOf(mLatitude), String.valueOf(mLongitude), String.valueOf(mStatusSpinner.getSelectedItem()), groupMember.getPhone());
                 }
             }
         });
@@ -203,7 +210,7 @@ public class HomeFragment extends Fragment {
         return mView;
     }
 
-    public void sendStatusUpdate(final String userId, final String datetime, final String latitude, final String longitude, final String status) {
+    public void sendStatusUpdate(final String userId, final String datetime, final String latitude, final String longitude, final String status, final String phone) {
         if (mFirebaseUser != null) {
             final String message = "Tap to view the details.";
 
@@ -237,6 +244,12 @@ public class HomeFragment extends Fragment {
                             });
                         }
                     });
+
+            // Send SMS to the group members
+            String smsMessage = "RM0.00 D3SRS: I have updated my safety status to: \n\n" + status.toUpperCase() + "\n\nYou can view more details of the status in D3SRS app.";
+            if ((ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS)) == PackageManager.PERMISSION_GRANTED) {
+                mSmsManager.sendTextMessage(phone, null, smsMessage, null, null);
+            }
         }
     }
 

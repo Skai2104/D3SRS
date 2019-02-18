@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "358585421388-fc2l3b7dlr3usbrr88jgs309gvj901tj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skai2104.d3srs",
+            "certificate_hash": "2a2a0cb9d8a31b3ddf13de52868e124f544ca783"
+          }
+        },
+        {
           "client_id": "358585421388-g3u169sg6n6t8d3f2m10ate28p8af5ft.apps.googleusercontent.com",
           "client_type": 3
         }
