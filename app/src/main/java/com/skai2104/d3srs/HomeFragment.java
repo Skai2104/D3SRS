@@ -178,8 +178,17 @@ public class HomeFragment extends Fragment {
                             }
                         });
 
-                for (GroupMember groupMember : mGroupMemberUpdatedList) {
-                    sendStatusUpdate(groupMember.getUserId(), dateTime, String.valueOf(mLatitude), String.valueOf(mLongitude), String.valueOf(mStatusSpinner.getSelectedItem()), groupMember.getPhone());
+                for (GroupMember groupMember : mGroupMemberList) {
+                    if (groupMember.getType().equals("existing")) {
+                        sendStatusUpdate(groupMember.getUserId(), dateTime, String.valueOf(mLatitude), String.valueOf(mLongitude), String.valueOf(mStatusSpinner.getSelectedItem()));
+                    } else {
+                        Toast.makeText(getContext(), "Safety status successfully sent!", Toast.LENGTH_SHORT).show();
+                    }
+                    // Send SMS to the group members
+                    String smsMessage = "RM0.00 D3SRS: I have updated my safety status to: \n\n" + String.valueOf(mStatusSpinner.getSelectedItem()).toUpperCase() + "\n\nYou can view more details of the status in D3SRS app.";
+                    if ((ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS)) == PackageManager.PERMISSION_GRANTED) {
+                        mSmsManager.sendTextMessage(groupMember.getPhone(), null, smsMessage, null, null);
+                    }
                 }
             }
         });
@@ -210,7 +219,7 @@ public class HomeFragment extends Fragment {
         return mView;
     }
 
-    public void sendStatusUpdate(final String userId, final String datetime, final String latitude, final String longitude, final String status, final String phone) {
+    public void sendStatusUpdate(final String userId, final String datetime, final String latitude, final String longitude, final String status) {
         if (mFirebaseUser != null) {
             final String message = "Tap to view the details.";
 
@@ -244,12 +253,6 @@ public class HomeFragment extends Fragment {
                             });
                         }
                     });
-
-            // Send SMS to the group members
-            String smsMessage = "RM0.00 D3SRS: I have updated my safety status to: \n\n" + status.toUpperCase() + "\n\nYou can view more details of the status in D3SRS app.";
-            if ((ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS)) == PackageManager.PERMISSION_GRANTED) {
-                mSmsManager.sendTextMessage(phone, null, smsMessage, null, null);
-            }
         }
     }
 
@@ -360,9 +363,7 @@ public class HomeFragment extends Fragment {
                                         GroupMember groupMember = doc.getDocument().toObject(GroupMember.class);
                                         groupMember.setDocId(docId);
 
-                                        if (groupMember.getType().equals("existing")) {
-                                            mGroupMemberList.add(groupMember);
-                                        }
+                                        mGroupMemberList.add(groupMember);
                                     }
                                 }
                             }
@@ -417,9 +418,17 @@ public class HomeFragment extends Fragment {
                                     groupMember.setLatitude(user.getLatitude());
                                     groupMember.setLongitude(user.getLongitude());
                                     groupMember.setDateTime(user.getDatetime());
-                                    mGroupMemberUpdatedList.add(groupMember);
+                                    break;
+
+                                } else {
+                                    groupMember.setStatus("Unknown");
+                                    groupMember.setLatitude("");
+                                    groupMember.setLongitude("");
+                                    groupMember.setDateTime("");
+
                                 }
                             }
+                            mGroupMemberUpdatedList.add(groupMember);
                         }
                         if (mGroupMemberUpdatedList.isEmpty()) {
                             mGroupListLayout.setVisibility(View.GONE);

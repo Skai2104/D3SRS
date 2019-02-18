@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,42 +44,52 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
         final String status = mGroupList.get(position).getStatus();
 
         viewHolder.mTypeTV.setText(status);
-        switch (status) {
-            case "Unknown":
-                viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#B0C4DE"));
-                break;
+        if (status != null) {
+            switch (status) {
+                case "Unknown":
+                    viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#B0C4DE"));
+                    break;
 
-            case "Safe":
-                viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#32CD32"));
-                break;
+                case "Safe":
+                    viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#32CD32"));
+                    break;
 
-            case "Waiting for help":
-                viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#FF8C00"));
-                break;
+                case "Waiting for help":
+                    viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#FF8C00"));
+                    break;
+            }
+        } else {
+            viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#FF8C00"));
         }
 
         final String userId = mGroupList.get(position).getUserId();
         final String latitude = mGroupList.get(position).getLatitude();
         final String longitude = mGroupList.get(position).getLongitude();
         final String datetime = mGroupList.get(position).getDateTime();
+        final String type = mGroupList.get(position).getType();
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(mContext, StatusDetailsActivity.class);
-                i.putExtra("userId", userId);
+                if (type.equals("existing")) {
+                    Intent i = new Intent(mContext, StatusDetailsActivity.class);
+                    i.putExtra("userId", userId);
 
-                if (nickname.isEmpty()) {
-                    i.putExtra("from_user", name);
+                    if (nickname.isEmpty()) {
+                        i.putExtra("from_user", name);
+                    } else {
+                        i.putExtra("from_user", nickname);
+                    }
+
+                    i.putExtra("status", status);
+                    i.putExtra("latitude", latitude);
+                    i.putExtra("longitude", longitude);
+                    i.putExtra("datetime", datetime);
+                    mContext.startActivity(i);
+                    
                 } else {
-                    i.putExtra("from_user", nickname);
+                    Toast.makeText(mContext, "He/She is not a registered user.", Toast.LENGTH_SHORT).show();
                 }
-
-                i.putExtra("status", status);
-                i.putExtra("latitude", latitude);
-                i.putExtra("longitude", longitude);
-                i.putExtra("datetime", datetime);
-                mContext.startActivity(i);
             }
         });
     }
@@ -91,6 +102,7 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
         private TextView mNicknameTV, mTypeTV;
+        private RelativeLayout mListitemLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,6 +111,7 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
 
             mNicknameTV = mView.findViewById(R.id.nicknameTV);
             mTypeTV = mView.findViewById(R.id.typeTV);
+            mListitemLayout = mView.findViewById(R.id.listItemLayout);
         }
     }
 }
