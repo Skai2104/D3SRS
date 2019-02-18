@@ -95,7 +95,7 @@ public class MissingPersonsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getUid();
 
-        mAdapter = new MissingPersonListRecyclerAdapter(getContext(), mMissingPersonList);
+        mAdapter = new MissingPersonListRecyclerAdapter(getContext(), mMissingPersonList, mSearchET);
 
         mMissingPersonListRV.setHasFixedSize(true);
         mMissingPersonListRV.setLayoutManager(new LinearLayoutManager(getContext()));

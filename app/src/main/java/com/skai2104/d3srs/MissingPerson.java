@@ -1,15 +1,16 @@
 package com.skai2104.d3srs;
 
 public class MissingPerson {
-    private String mName, mAge, mLocation, mAttire, mHeight, mWeight, mAddress1, mAddress2,
+    private String mName, mAge, mGender, mLocation, mAttire, mHeight, mWeight, mAddress1, mAddress2,
             mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReportPerson;
 
     public MissingPerson() {
     }
 
-    public MissingPerson(String name, String age, String location, String attire, String height, String weight, String address1, String address2, String facial, String physical, String body, String habits, String additional, String phone, String email, String status, String reportPerson) {
+    public MissingPerson(String name, String age, String gender, String location, String attire, String height, String weight, String address1, String address2, String facial, String physical, String body, String habits, String additional, String phone, String email, String status, String reportPerson) {
         mName = name;
         mAge = age;
+        mGender = gender;
         mLocation = location;
         mAttire = attire;
         mHeight = height;
@@ -33,6 +34,10 @@ public class MissingPerson {
 
     public String getAge() {
         return mAge;
+    }
+
+    public String getGender() {
+        return mGender;
     }
 
     public String getLocation() {
@@ -101,6 +106,10 @@ public class MissingPerson {
 
     public void setAge(String age) {
         mAge = age;
+    }
+
+    public void setGender(String gender) {
+        mGender = gender;
     }
 
     public void setLocation(String location) {

@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MissingPersonDetailsActivity"></activity>
+        <activity android:name=".MissingPersonDetailsActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".ReportMissingPersonActivity" />
         <activity android:name=".AccountSettingsActivity" />
         <activity android:name=".StatusDetailsActivity">
