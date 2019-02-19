@@ -134,6 +134,7 @@ public class MissingPersonsFragment extends Fragment {
                             mNoReportTV.setVisibility(View.VISIBLE);
                         }
 
+                        // Search for a specific missing person
                         boolean isFound = false;
                         MissingPerson missingPerson = new MissingPerson();
                         if (!searchName.isEmpty()) {

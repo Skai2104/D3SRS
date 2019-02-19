@@ -152,6 +152,8 @@ public class HomeFragment extends Fragment {
                 for (User user : mUserList) {
                     sendSOS(user.userId);
                 }
+                Toast.makeText(getContext(), "SOS sent!", Toast.LENGTH_SHORT).show();
+
                 return true;
             }
         });
@@ -182,8 +184,6 @@ public class HomeFragment extends Fragment {
                 for (GroupMember groupMember : mGroupMemberList) {
                     if (groupMember.getType().equals("existing")) {
                         sendStatusUpdate(groupMember.getUserId(), dateTime, String.valueOf(mLatitude), String.valueOf(mLongitude), String.valueOf(mStatusSpinner.getSelectedItem()));
-                    } else {
-                        Toast.makeText(getContext(), "Safety status successfully sent!", Toast.LENGTH_SHORT).show();
                     }
                     // Send SMS to the group members
                     String smsMessage = "RM0.00 D3SRS: I have updated my safety status to: \n\n" + String.valueOf(mStatusSpinner.getSelectedItem()).toUpperCase() + "\n\nYou can view more details of the status in D3SRS app.";
@@ -191,6 +191,7 @@ public class HomeFragment extends Fragment {
                         mSmsManager.sendTextMessage(groupMember.getPhone(), null, smsMessage, null, null);
                     }
                 }
+                Toast.makeText(getContext(), "Safety status successfully sent!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -243,7 +244,6 @@ public class HomeFragment extends Fragment {
                                     .add(statusUpdateMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Toast.makeText(getContext(), "Safety status successfully sent!", Toast.LENGTH_SHORT).show();
                                     refreshPage();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -283,7 +283,6 @@ public class HomeFragment extends Fragment {
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Toast.makeText(getActivity(), "SOS sent!", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

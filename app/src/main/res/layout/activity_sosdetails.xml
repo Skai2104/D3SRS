@@ -5,37 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".SOSDetailsActivity">
 
+    <include
+        layout="@layout/navigation_action_bar"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_below="@+id/toolbar"
         android:orientation="vertical"
         android:layout_centerInParent="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.2"
-                android:padding="3dp"
-                android:text="Name:"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
-
-            <TextView
-                android:id="@+id/nameTV"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:padding="3dp"
-                android:text="Name"
-                android:textStyle="bold"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -107,12 +89,5 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="Direction"/>
-
-        <Button
-            android:id="@+id/backBtn"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Back"/>
     </LinearLayout>
 </RelativeLayout>

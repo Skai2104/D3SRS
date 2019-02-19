@@ -1,17 +1,23 @@
 package com.skai2104.d3srs;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,7 +35,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
@@ -48,11 +59,17 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String TAG = "SOS Details Activity";
 
-    private TextView mNameTV, mLocationTV, mDateTimeTV;
+    private Toolbar mToolbar;
+    private TextView mLocationTV, mDateTimeTV;
     private MapView mMapView;
+
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mFirebaseUser;
 
     private double mLatitude = 0.0, mLongitude = 0.0;
     private String mDataFrom;
+    private String mCurrentUserId, mDocId;
 
     private GeoApiContext mGeoApiContext = null;
 
@@ -61,7 +78,6 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sosdetails);
 
-        mNameTV = findViewById(R.id.nameTV);
         mLocationTV = findViewById(R.id.locationTV);
         mDateTimeTV = findViewById(R.id.dateTimeTV);
         mMapView = findViewById(R.id.mapView);
@@ -70,6 +86,16 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
         String latitudeStr = getIntent().getStringExtra("latitude");
         String longitudeStr = getIntent().getStringExtra("longitude");
         String dateTime = getIntent().getStringExtra("datetime");
+        mDocId = getIntent().getStringExtra("docId");
+
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(mDataFrom);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUserId = mAuth.getUid();
 
         if (latitudeStr != null)
             mLatitude = Double.valueOf(latitudeStr);
@@ -77,6 +103,7 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
         if (longitudeStr != null)
             mLongitude = Double.valueOf(longitudeStr);
 
+        // Get the full address from the latitude and longitude
         Geocoder geocoder = new Geocoder(SOSDetailsActivity.this, Locale.getDefault());
         List<Address> addressList;
         String address = "";
@@ -98,19 +125,11 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
             Log.e("GeocoderException", e.getMessage());
         }
 
-        mNameTV.setText(mDataFrom);
         mLocationTV.setText(address);
         mDateTimeTV.setText(dateTime);
         mLocationTV.setMovementMethod(new ScrollingMovementMethod());
 
         initGoogleMap(savedInstanceState);
-
-        findViewById(R.id.backBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         findViewById(R.id.directionBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +210,59 @@ public class SOSDetailsActivity extends AppCompatActivity implements OnMapReadyC
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sos_details_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.dismissBtn:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Dismiss SOS Alert")
+                        .setMessage("Are you sure you want to dismiss this SOS alert?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dismissSOS();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void dismissSOS() {
+        mFirestore.collection("Users").document(mCurrentUserId)
+                .collection("SOSNotification").document(mDocId)
+                .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(SOSDetailsActivity.this, "SOS alert dismissed", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
     }
 
     public void navigateToLocation() {

@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 for (User user : mUserList) {
                     sendSOS(user.userId);
                 }
+                Toast.makeText(MainActivity.this, "SOS sent!", Toast.LENGTH_SHORT).show();
 
                 return true;
             }
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Toast.makeText(MainActivity.this, "SOS sent!", Toast.LENGTH_SHORT).show();
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
