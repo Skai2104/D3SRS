@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -95,7 +96,7 @@ public class MissingPersonsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getUid();
 
-        mAdapter = new MissingPersonListRecyclerAdapter(getContext(), mMissingPersonList, mSearchET);
+        mAdapter = new MissingPersonListRecyclerAdapter(getContext(), mMissingPersonList, mSearchET, mCurrentUserId);
 
         mMissingPersonListRV.setHasFixedSize(true);
         mMissingPersonListRV.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -115,8 +116,11 @@ public class MissingPersonsFragment extends Fragment {
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                     if (queryDocumentSnapshots != null) {
                         for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                            String docId = doc.getDocument().getId();
+
                             if (doc.getType() == DocumentChange.Type.ADDED) {
                                 MissingPerson missingPerson = doc.getDocument().toObject(MissingPerson.class);
+                                missingPerson.setDocId(docId);
                                 mMissingPersonList.add(missingPerson);
 
                                 mAdapter.notifyDataSetChanged();

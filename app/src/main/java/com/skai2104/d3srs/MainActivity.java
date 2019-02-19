@@ -152,9 +152,10 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     callIntent = new Intent(Intent.ACTION_DIAL);
                 } else {
-                    callIntent = new Intent(Intent.ACTION_CALL);
+                    //callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent = new Intent(Intent.ACTION_DIAL);
                 }
-                callIntent.setData(Uri.parse("tel:0174087450"));
+                callIntent.setData(Uri.parse("tel:999"));
                 startActivity(callIntent);
 
                 for (User user : mUserList) {

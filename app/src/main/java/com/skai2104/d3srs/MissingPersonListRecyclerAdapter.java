@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,10 +20,13 @@ public class MissingPersonListRecyclerAdapter extends RecyclerView.Adapter<Missi
     private Context mContext;
     private EditText mSearchET;
 
-    public MissingPersonListRecyclerAdapter(Context context, List<MissingPerson> missingPersonList, EditText searchET) {
+    private String mCurrentUserId;
+
+    public MissingPersonListRecyclerAdapter(Context context, List<MissingPerson> missingPersonList, EditText searchET, String currentUserId) {
         mMissingPersonList = missingPersonList;
         mContext = context;
         mSearchET = searchET;
+        mCurrentUserId = currentUserId;
     }
 
     @NonNull
@@ -51,9 +56,17 @@ public class MissingPersonListRecyclerAdapter extends RecyclerView.Adapter<Missi
         final String phone = mMissingPersonList.get(position).getPhone();
         final String email = mMissingPersonList.get(position).getEmail();
         final String status = mMissingPersonList.get(position).getStatus();
-        final String reportPerson = mMissingPersonList.get(position).getReportPerson();
+        final String reportPerson = mMissingPersonList.get(position).getReported();
+        final String docId = mMissingPersonList.get(position).getDocId();
 
         viewHolder.mNameTV.setText(name);
+
+        if (reportPerson.equals(mCurrentUserId)) {
+            viewHolder.mReportedTV.setVisibility(View.VISIBLE);
+
+        } else {
+            viewHolder.mReportedTV.setVisibility(View.GONE);
+        }
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +92,7 @@ public class MissingPersonListRecyclerAdapter extends RecyclerView.Adapter<Missi
                 i.putExtra("email", email);
                 i.putExtra("status", status);
                 i.putExtra("reportPerson", reportPerson);
+                i.putExtra("docId", docId);
                 mContext.startActivity(i);
             }
         });
@@ -91,7 +105,7 @@ public class MissingPersonListRecyclerAdapter extends RecyclerView.Adapter<Missi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
-        private TextView mNameTV;
+        private TextView mNameTV, mReportedTV;
         private ImageView mPhotoIV;
 
         public ViewHolder(@NonNull View itemView) {
@@ -101,6 +115,7 @@ public class MissingPersonListRecyclerAdapter extends RecyclerView.Adapter<Missi
 
             mNameTV = mView.findViewById(R.id.nameTV);
             mPhotoIV = mView.findViewById(R.id.photoIV);
+            mReportedTV = mView.findViewById(R.id.reportedTV);
         }
     }
 }

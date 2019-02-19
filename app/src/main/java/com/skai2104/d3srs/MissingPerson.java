@@ -2,12 +2,12 @@ package com.skai2104.d3srs;
 
 public class MissingPerson {
     private String mName, mAge, mGender, mLocation, mAttire, mHeight, mWeight, mAddress1, mAddress2,
-            mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReportPerson;
+            mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReported, mDocId;
 
     public MissingPerson() {
     }
 
-    public MissingPerson(String name, String age, String gender, String location, String attire, String height, String weight, String address1, String address2, String facial, String physical, String body, String habits, String additional, String phone, String email, String status, String reportPerson) {
+    public MissingPerson(String name, String age, String gender, String location, String attire, String height, String weight, String address1, String address2, String facial, String physical, String body, String habits, String additional, String phone, String email, String status, String reported) {
         mName = name;
         mAge = age;
         mGender = gender;
@@ -25,7 +25,7 @@ public class MissingPerson {
         mPhone = phone;
         mEmail = email;
         mStatus = status;
-        mReportPerson = reportPerson;
+        mReported = reported;
     }
 
     public String getName() {
@@ -96,8 +96,12 @@ public class MissingPerson {
         return mStatus;
     }
 
-    public String getReportPerson() {
-        return mReportPerson;
+    public String getReported() {
+        return mReported;
+    }
+
+    public String getDocId() {
+        return mDocId;
     }
 
     public void setName(String name) {
@@ -168,7 +172,11 @@ public class MissingPerson {
         mStatus = status;
     }
 
-    public void setReportPerson(String reportPerson) {
-        mReportPerson = reportPerson;
+    public void setReported(String reported) {
+        mReported = reported;
+    }
+
+    public void setDocId(String docId) {
+        mDocId = docId;
     }
 }
