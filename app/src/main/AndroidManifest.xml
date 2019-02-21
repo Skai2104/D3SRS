@@ -20,8 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name=".ViewLiveLocationActivity" />-->
-        <!-- <activity android:name=".ShareLiveLocationActivity" /> -->
+        <activity android:name=".ViewLiveLocationActivity" />
+        <!--<activity android:name=".ShareLiveLocationActivity" />-->
         <activity android:name=".AddSightingInfoActivity" />
         <activity
             android:name=".SightingInfoDetailsActivity"
@@ -54,7 +54,7 @@
         <activity
             android:name=".ProfileActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".ViewLiveLocationActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

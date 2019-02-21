@@ -39,7 +39,7 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
     private MapView mMapView;
 
     private double mLatitude = 0.0, mLongitude = 0.0;
-    private String mName;
+    private String mName, mUserId;
 
     private GeoApiContext mGeoApiContext = null;
 
@@ -57,8 +57,8 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String userId = getIntent().getStringExtra("userId");
         mName = getIntent().getStringExtra("from_user");
+        mUserId = getIntent().getStringExtra("from_user_id");
         String status = getIntent().getStringExtra("status");
         String latitudeStr = getIntent().getStringExtra("latitude");
         String longitudeStr = getIntent().getStringExtra("longitude");
@@ -222,11 +222,14 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
             case R.id.requestLlBtn:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Request Live Location")
-                        .setMessage("Please select the duration of the live location")
+                        .setMessage("Request the live location from " + mName + "?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                Intent i = new Intent(StatusDetailsActivity.this, ViewLiveLocationActivity.class);
+                                i.putExtra("name", mName);
+                                i.putExtra("userId", mUserId);
+                                startActivity(i);
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {

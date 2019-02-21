@@ -63,8 +63,8 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
         }
 
         final String userId = mGroupList.get(position).getUserId();
-        final String latitude = mGroupList.get(position).getLatitude();
-        final String longitude = mGroupList.get(position).getLongitude();
+        final double latitude = mGroupList.get(position).getLatitude();
+        final double longitude = mGroupList.get(position).getLongitude();
         final String datetime = mGroupList.get(position).getDateTime();
         final String type = mGroupList.get(position).getType();
 
@@ -73,7 +73,7 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
             public void onClick(View v) {
                 if (type.equals("existing")) {
                     Intent i = new Intent(mContext, StatusDetailsActivity.class);
-                    i.putExtra("userId", userId);
+                    i.putExtra("from_user_id", userId);
 
                     if (nickname.isEmpty()) {
                         i.putExtra("from_user", name);

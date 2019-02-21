@@ -19,6 +19,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         String clickAction = remoteMessage.getNotification().getClickAction();
         String dataMessage = remoteMessage.getData().get("message");
         String dataFrom = remoteMessage.getData().get("from_user");
+        String fromUserId = remoteMessage.getData().get("from_user_id");
         String latitudeStr = remoteMessage.getData().get("latitude");
         String longitudeStr = remoteMessage.getData().get("longitude");
         String datetime = remoteMessage.getData().get("datetime");
@@ -47,6 +48,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         Intent resultIntent = new Intent(clickAction);
         resultIntent.putExtra("message", dataMessage);
         resultIntent.putExtra("from_user", dataFrom);
+        resultIntent.putExtra("from_user_id", fromUserId);
         resultIntent.putExtra("latitude", latitudeStr);
         resultIntent.putExtra("longitude", longitudeStr);
         resultIntent.putExtra("datetime", datetime);

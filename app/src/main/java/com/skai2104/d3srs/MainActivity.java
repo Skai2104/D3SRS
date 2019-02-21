@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mFirebaseUser != null) {
                     Map<String, Object> updateLocationMap = new HashMap<>();
-                    updateLocationMap.put("latitude", String.valueOf(mLatitude));
-                    updateLocationMap.put("longitude", String.valueOf(mLongitude));
+                    updateLocationMap.put("latitude", mLatitude);
+                    updateLocationMap.put("longitude", mLongitude);
 
                     mFirestore.collection("Users").document(mCurrentUserId).update(updateLocationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -250,8 +250,8 @@ public class MainActivity extends AppCompatActivity {
                             SOSMap.put("message", message);
                             SOSMap.put("from", mCurrentUserName);
                             SOSMap.put("fromId", mCurrentUserId);
-                            SOSMap.put("latitude", String.valueOf(mLatitude));
-                            SOSMap.put("longitude", String.valueOf(mLongitude));
+                            SOSMap.put("latitude", mLatitude);
+                            SOSMap.put("longitude", mLongitude);
                             SOSMap.put("datetime", dateTime);
 
                             mFirestore.collection("Users").document(userId).collection("SOSNotification")

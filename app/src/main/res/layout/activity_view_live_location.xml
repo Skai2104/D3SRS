@@ -5,30 +5,56 @@
     android:layout_height="match_parent"
     tools:context=".ViewLiveLocationActivity">
 
+    <include
+        layout="@layout/navigation_action_bar"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
+        android:id="@+id/liveLocationLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_margin="16dp"
-        android:layout_centerInParent="true">
+        android:layout_below="@+id/toolbar"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/latitudeTV"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:text="Latitude"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/longitudeTV"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:text="Longitude"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Latitude: "
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:id="@+id/latitudeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="123"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:text="Longitude: "
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:id="@+id/longitudeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="456"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+        </LinearLayout>
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
@@ -37,20 +63,25 @@
             android:layout_weight="8"/>
 
         <Button
-            android:id="@+id/startBtn"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="10dp"
-            android:text="Start"/>
-
-        <Button
             android:id="@+id/stopBtn"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Stop"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="End"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/waitingTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:padding="40dp"
+        android:text="Waiting"
+        android:background="@drawable/border_background"/>
 
 </RelativeLayout>

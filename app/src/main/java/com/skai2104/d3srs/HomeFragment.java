@@ -169,8 +169,8 @@ public class HomeFragment extends Fragment {
 
                 Map<String, Object> updateStatusMap = new HashMap<>();
                 updateStatusMap.put("datetime", dateTime);
-                updateStatusMap.put("latitude", String.valueOf(mLatitude));
-                updateStatusMap.put("longitude", String.valueOf(mLongitude));
+                updateStatusMap.put("latitude", mLatitude);
+                updateStatusMap.put("longitude", mLongitude);
                 updateStatusMap.put("status", String.valueOf(mStatusSpinner.getSelectedItem()));
 
                 mFirestore.collection("Users").document(mCurrentUserId).update(updateStatusMap)
@@ -183,7 +183,7 @@ public class HomeFragment extends Fragment {
 
                 for (GroupMember groupMember : mGroupMemberList) {
                     if (groupMember.getType().equals("existing")) {
-                        sendStatusUpdate(groupMember.getUserId(), dateTime, String.valueOf(mLatitude), String.valueOf(mLongitude), String.valueOf(mStatusSpinner.getSelectedItem()));
+                        sendStatusUpdate(groupMember.getUserId(), dateTime, mLatitude, mLongitude, String.valueOf(mStatusSpinner.getSelectedItem()));
                     }
                     // Send SMS to the group members
                     String smsMessage = "RM0.00 D3SRS: I have updated my safety status to: \n\n" + String.valueOf(mStatusSpinner.getSelectedItem()).toUpperCase() + "\n\nYou can view more details of the status in D3SRS app.";
@@ -221,7 +221,7 @@ public class HomeFragment extends Fragment {
         return mView;
     }
 
-    public void sendStatusUpdate(final String userId, final String datetime, final String latitude, final String longitude, final String status) {
+    public void sendStatusUpdate(final String userId, final String datetime, final double latitude, final double longitude, final String status) {
         if (mFirebaseUser != null) {
             final String message = "Tap to view the details.";
 
@@ -275,8 +275,8 @@ public class HomeFragment extends Fragment {
                             SOSMap.put("message", message);
                             SOSMap.put("from", mCurrentUserName);
                             SOSMap.put("fromId", mCurrentUserId);
-                            SOSMap.put("latitude", String.valueOf(mLatitude));
-                            SOSMap.put("longitude", String.valueOf(mLongitude));
+                            SOSMap.put("latitude", mLatitude);
+                            SOSMap.put("longitude", mLongitude);
                             SOSMap.put("datetime", String.valueOf(dateTime));
 
                             mFirestore.collection("Users").document(userId).collection("SOSNotification")
@@ -422,8 +422,8 @@ public class HomeFragment extends Fragment {
 
                                 } else {
                                     groupMember.setStatus("Unknown");
-                                    groupMember.setLatitude("");
-                                    groupMember.setLongitude("");
+                                    groupMember.setLatitude(0.0);
+                                    groupMember.setLongitude(0.0);
                                     groupMember.setDateTime("");
 
                                 }

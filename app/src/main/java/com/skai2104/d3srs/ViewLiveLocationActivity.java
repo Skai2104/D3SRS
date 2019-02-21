@@ -2,8 +2,10 @@ package com.skai2104.d3srs;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,16 +32,17 @@ import javax.annotation.Nullable;
 public class ViewLiveLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
-    private TextView mLatitudeTV, mLongitudeTV;
-    private Button mStartBtn, mStopBtn;
+    private Toolbar mToolbar;
+    private TextView mLatitudeTV, mLongitudeTV, mWaitingTV;
     private MapView mMapView;
+    private LinearLayout mLiveLocationLayout;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
     private FirebaseUser mFirebaseUser;
     private ListenerRegistration mRegistration;
 
-    private String mCurrentUserId, mDocId;
+    private String mCurrentUserId, mName, mUserId, mStatus;
     private Double mLatitude = 0.0, mLongitude = 0.0;
     private boolean mIsFound = false;
 
@@ -54,9 +57,21 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
 
         mLatitudeTV = findViewById(R.id.latitudeTV);
         mLongitudeTV = findViewById(R.id.longitudeTV);
-        mStartBtn = findViewById(R.id.startBtn);
-        mStopBtn = findViewById(R.id.stopBtn);
         mMapView = findViewById(R.id.mapView);
+        mLiveLocationLayout = findViewById(R.id.liveLocationLayout);
+        mWaitingTV = findViewById(R.id.waitingTV);
+
+        mLiveLocationLayout.setVisibility(View.GONE);
+        mWaitingTV.setVisibility(View.VISIBLE);
+
+        mName = getIntent().getStringExtra("name");
+        mUserId = getIntent().getStringExtra("userId");
+        mWaitingTV.setText("Waiting for " + mName + " to approve your request...");
+
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Live Location of " + mName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
@@ -64,21 +79,13 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
 
         initGoogleMap(savedInstanceState);
 
-        mStartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStartBtn.setEnabled(false);
-                mStopBtn.setEnabled(true);
-                getLocationUpdate();
-            }
-        });
+        getLocationUpdate();
 
-        mStopBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.stopBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mStartBtn.setEnabled(true);
-                mStopBtn.setEnabled(false);
                 mRegistration.remove();
+                finish();
             }
         });
     }
@@ -91,18 +98,54 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                        mDocId = doc.getDocument().getId();
+                        if (doc.getType() == DocumentChange.Type.MODIFIED) {
+                            String userId = doc.getDocument().getString("userId");
+                            if (userId != null) {
+                                if (userId.equals(mUserId)) {
+                                    mIsFound = true;
 
-                        if (mDocId.equals("oNLHdC4DHF9jA5DmOx8R")) {
-                            if (doc.getType() == DocumentChange.Type.MODIFIED) {
-                                mLatitude = doc.getDocument().getDouble("latitude");
-                                mLongitude = doc.getDocument().getDouble("longitude");
+                                    mLatitude = doc.getDocument().getDouble("latitude");
+                                    mLongitude = doc.getDocument().getDouble("longitude");
+                                    mStatus = doc.getDocument().getString("status");
 
-                                mLatitudeTV.setText(String.valueOf(mLatitude));
-                                mLongitudeTV.setText(String.valueOf(mLongitude));
+                                    break;
 
-                                refreshMap(mMap);
-                                markStartingLocationOnMap(mMap, new LatLng(mLatitude, mLongitude));
+                                } else {
+                                    mIsFound = false;
+                                }
+                            }
+                        }
+                    }
+                    if (mIsFound) {
+                        if (mStatus != null) {
+                            switch (mStatus) {
+                                case "sharing":
+                                    mLiveLocationLayout.setVisibility(View.VISIBLE);
+                                    mWaitingTV.setVisibility(View.GONE);
+
+                                    mLatitudeTV.setText(String.valueOf(mLatitude));
+                                    mLongitudeTV.setText(String.valueOf(mLongitude));
+
+                                    refreshMap(mMap);
+                                    markStartingLocationOnMap(mMap, new LatLng(mLatitude, mLongitude));
+
+                                    break;
+
+                                case "rejected":
+                                    mWaitingTV.setText(mName + " has rejected your live location request.");
+
+                                    mLiveLocationLayout.setVisibility(View.GONE);
+                                    mWaitingTV.setVisibility(View.VISIBLE);
+
+                                    break;
+
+                                case "stop":
+                                    mWaitingTV.setText(mName + " has ended the live location sharing session with you.");
+
+                                    mLiveLocationLayout.setVisibility(View.GONE);
+                                    mWaitingTV.setVisibility(View.VISIBLE);
+
+                                    break;
                             }
                         }
                     }
@@ -185,10 +228,16 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
     }
 
     private void markStartingLocationOnMap(GoogleMap map, LatLng location) {
-        float zoomLevel = 15.0f;
+        float zoomLevel = map.getMaxZoomLevel() - 2.0f;
 
         map.addMarker(new MarkerOptions().position(location).title("The location of him/her"));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

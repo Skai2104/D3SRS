@@ -104,6 +104,7 @@ exports.sendStatusUpdate = functions.firestore
 																		data: {
 																			message: from_message,
 																			from_user: from_user,
+																			from_user_id: from_user_id,
 																			latitude: latitude,
 																			longitude: longitude,
 																			datetime: datetime,
