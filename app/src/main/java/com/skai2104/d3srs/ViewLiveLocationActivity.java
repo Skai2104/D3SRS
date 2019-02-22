@@ -44,7 +44,8 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
     private Toolbar mToolbar;
     private TextView mLatitudeTV, mLongitudeTV, mWaitingTV;
     private MapView mMapView;
-    private LinearLayout mLiveLocationLayout;
+    private LinearLayout mLiveLocationLayout, mInfoLayout;
+    private Button mCancelBtn, mOkayBtn;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -69,9 +70,14 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
         mMapView = findViewById(R.id.mapView);
         mLiveLocationLayout = findViewById(R.id.liveLocationLayout);
         mWaitingTV = findViewById(R.id.waitingTV);
+        mCancelBtn = findViewById(R.id.cancelBtn);
+        mOkayBtn = findViewById(R.id.okayBtn);
+        mInfoLayout = findViewById(R.id.infoLayout);
 
         mLiveLocationLayout.setVisibility(View.GONE);
-        mWaitingTV.setVisibility(View.VISIBLE);
+        mInfoLayout.setVisibility(View.VISIBLE);
+        mCancelBtn.setVisibility(View.VISIBLE);
+        mOkayBtn.setVisibility(View.GONE);
 
         mName = getIntent().getStringExtra("name");
         mUserId = getIntent().getStringExtra("userId");
@@ -90,6 +96,36 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
 
         getLocationUpdate();
 
+        mCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder  = new AlertDialog.Builder(ViewLiveLocationActivity.this);
+                builder.setTitle("Cancel Request")
+                        .setMessage("Are you sure you want to cancel the live location request?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                stopSharing("cancelled");
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+            }
+        });
+
+        mOkayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRegistration.remove();
+                finish();
+            }
+        });
+
         findViewById(R.id.stopBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,7 +135,7 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                stopSharing();
+                                stopSharing("requesterStop");
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -153,7 +189,7 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
                             switch (mStatus) {
                                 case "sharing":
                                     mLiveLocationLayout.setVisibility(View.VISIBLE);
-                                    mWaitingTV.setVisibility(View.GONE);
+                                    mInfoLayout.setVisibility(View.GONE);
 
                                     mLatitudeTV.setText(String.valueOf(mLatitude));
                                     mLongitudeTV.setText(String.valueOf(mLongitude));
@@ -167,7 +203,9 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
                                     mWaitingTV.setText(mName + " has rejected your live location request.");
 
                                     mLiveLocationLayout.setVisibility(View.GONE);
-                                    mWaitingTV.setVisibility(View.VISIBLE);
+                                    mInfoLayout.setVisibility(View.VISIBLE);
+                                    mCancelBtn.setVisibility(View.GONE);
+                                    mOkayBtn.setVisibility(View.VISIBLE);
 
                                     break;
 
@@ -175,7 +213,9 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
                                     mWaitingTV.setText(mName + " has ended the live location sharing session with you.");
 
                                     mLiveLocationLayout.setVisibility(View.GONE);
-                                    mWaitingTV.setVisibility(View.VISIBLE);
+                                    mInfoLayout.setVisibility(View.VISIBLE);
+                                    mCancelBtn.setVisibility(View.GONE);
+                                    mOkayBtn.setVisibility(View.VISIBLE);
 
                                     break;
                             }
@@ -186,9 +226,9 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
         });
     }
 
-    private void stopSharing() {
+    private void stopSharing(String event) {
         Map<String, Object> stopSharingMap = new HashMap<>();
-        stopSharingMap.put("sharing", "requesterStop");
+        stopSharingMap.put("sharing", event);
 
         mFirestore.collection("Users").document(mUserId)
                 .update(stopSharingMap)

@@ -117,4 +117,48 @@ exports.sendStatusUpdate = functions.firestore
 																	return console.log("Status Notification sent.");
 																});
 
-									});						
+									});
+									
+exports.sendLocationRequest = functions.firestore
+									.document("Users/{user_id}/LiveLocationRequests/{request_id}")
+									.onWrite((event, context) => {
+										const user_id = context.params.user_id;
+										const request_id = context.params.request_id;
+										let from_user;
+										let from_user_id;
+
+										return admin.firestore().collection("Users").doc(user_id)
+																.collection("LiveLocationRequests").doc(request_id)
+																.get().then(queryResult => {
+																	from_user = queryResult.data().name;
+																	from_user_id = queryResult.data().userId;
+
+																	const from_data = admin.firestore().collection("Users").doc(from_user_id).get();
+																	const to_data = admin.firestore().collection("Users").doc(user_id).get();
+
+																	return Promise.all([from_data, to_data]);
+																})
+																.then(result => {
+																	const from_name = result[0].data().name;
+																	const to_name = result[1].data().name;
+																	const token_id = result[1].data().token_id;
+
+																	const payload = {
+																		notification: {
+																			title: from_name + " wants to view your live location",
+																			body: "Tap to accept or reject the request.",
+																			icon: "default",
+																			click_action: "com.skai2104.d3srs.TARGETLOCATIONNOTIFICATION"
+																		},
+																		data: {
+																			from_user: from_user,
+																			from_user_id: from_user_id
+																		}
+																	};
+																	return admin.messaging().sendToDevice(token_id, payload);
+																})
+																.then(result => {
+																	return console.log("Live location request sent.");
+																});
+
+									});									

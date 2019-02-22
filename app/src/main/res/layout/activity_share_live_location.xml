@@ -85,7 +85,6 @@
         android:background="@drawable/border_background"
         android:visibility="gone">
 
-
         <TextView
             android:id="@+id/shareLocationTV"
             android:layout_width="match_parent"

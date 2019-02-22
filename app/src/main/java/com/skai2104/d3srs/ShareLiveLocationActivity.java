@@ -59,7 +59,7 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
     private LinearLayout mMainLayout, mApprovalLayout, mStopSharingLayout;
     private MapView mMapView;
     private RelativeLayout mProgressBarLayout;
-    private Button mStopBtn;
+    private Button mStopBtn, mOkayBtn;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -91,9 +91,12 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
         mStopBtn = findViewById(R.id.stopBtn);
         mRequesterStopTV = findViewById(R.id.requesterStopTV);
         mStopSharingLayout = findViewById(R.id.stopSharingLayout);
+        mOkayBtn = findViewById(R.id.okBtn);
+
+        mRequesterName = getIntent().getStringExtra("from_user");
 
         mMainLayout.setVisibility(View.GONE);
-        mApprovalLayout.setVisibility(View.VISIBLE);
+        mApprovalLayout.setVisibility(View.GONE);
         mProgressBarLayout.setVisibility(View.GONE);
         mStopSharingLayout.setVisibility(View.GONE);
 
@@ -111,8 +114,30 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
         mLiveLocationMap = new HashMap<>();
 
         initGoogleMap(savedInstanceState);
+        getSharingStatus();
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        mOkayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> updateMap = new HashMap<>();
+                updateMap.put("sharing", "stop");
+
+                mFirestore.collection("Users").document(mCurrentUserId)
+                        .update(updateMap)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                if (mClient != null) {
+                                    mClient.removeLocationUpdates(mLocationCallback);
+                                }
+
+                                finish();
+                            }
+                        });
+            }
+        });
 
         findViewById(R.id.shareBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,7 +264,9 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
         };
 
         mClient.requestLocationUpdates(request, mLocationCallback, null);
+    }
 
+    public void getSharingStatus() {
         Query query = mFirestore.collection("Users");
         mRegistration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -261,18 +288,21 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
                     }
                     if (mIsFound) {
                         if (mSharing != null) {
-                            if (mSharing.equals("requesterStop")) {
-                                mMainLayout.setVisibility(View.GONE);
-                                mStopSharingLayout.setVisibility(View.VISIBLE);
-                                mRequesterStopTV.setText(mRequesterName + " has ended the sharing session");
+                            switch (mSharing) {
+                                case "requesterStop":
+                                    mMainLayout.setVisibility(View.GONE);
+                                    mStopSharingLayout.setVisibility(View.VISIBLE);
+                                    mRequesterStopTV.setText(mRequesterName + " has ended the sharing session");
 
-                                findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        mClient.removeLocationUpdates(mLocationCallback);
-                                        finish();
-                                    }
-                                });
+                                    break;
+
+                                case "cancelled":
+                                    mApprovalLayout.setVisibility(View.GONE);
+                                    mMainLayout.setVisibility(View.GONE);
+                                    mStopSharingLayout.setVisibility(View.VISIBLE);
+                                    mRequesterStopTV.setText(mRequesterName + " has cancelled the sharing session");
+
+                                    break;
                             }
                         }
                     }
@@ -280,8 +310,6 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
             }
         });
     }
-
-
 
     private void initGoogleMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
@@ -321,6 +349,28 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
     public void onStart() {
         super.onStart();
         mMapView.onStart();
+
+        mProgressBarLayout.setVisibility(View.VISIBLE);
+
+        mFirestore.collection("Users").document(mCurrentUserId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        mSharing = documentSnapshot.getString("sharing");
+
+                        if (mSharing.equals("cancelled")) {
+                            mProgressBarLayout.setVisibility(View.GONE);
+                            mApprovalLayout.setVisibility(View.GONE);
+                            mMainLayout.setVisibility(View.GONE);
+                            mStopSharingLayout.setVisibility(View.VISIBLE);
+                            mRequesterStopTV.setText(mRequesterName + " has cancelled the sharing session");
+
+                        } else {
+                            mApprovalLayout.setVisibility(View.VISIBLE);
+                            mProgressBarLayout.setVisibility(View.GONE);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -372,8 +422,10 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
 
     @Override
     public void onBackPressed() {
-        if (mSharing.equals("sharing")) {
-            super.onBackPressed();
+        if (mSharing != null) {
+            if (mSharing.equals("sharing")) {
+                super.onBackPressed();
+            }
         }
     }
 }

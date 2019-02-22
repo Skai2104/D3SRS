@@ -72,16 +72,37 @@
             android:text="End"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/waitingTV"
+    <LinearLayout
+        android:id="@+id/infoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:padding="40dp"
-        android:text="Waiting"
-        android:background="@drawable/border_background"/>
+        android:orientation="vertical"
+        android:background="@drawable/border_background" >
+
+        <TextView
+            android:id="@+id/waitingTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="40dp"
+            android:text="Waiting" />
+
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/okayBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:visibility="visible"/>
+    </LinearLayout>
 
 </RelativeLayout>

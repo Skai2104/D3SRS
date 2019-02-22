@@ -21,7 +21,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ViewLiveLocationActivity" />
-        <activity android:name=".ShareLiveLocationActivity" />
+        <activity android:name=".ShareLiveLocationActivity">
+            <intent-filter>
+                <action android:name="com.skai2104.d3srs.TARGETLOCATIONNOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".AddSightingInfoActivity" />
         <activity
             android:name=".SightingInfoDetailsActivity"

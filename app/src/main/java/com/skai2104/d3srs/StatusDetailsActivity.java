@@ -185,6 +185,8 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -277,6 +279,7 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
     public void sendLiveLocationRequest() {
         Map<String, Object> sendRequestMap = new HashMap<>();
         sendRequestMap.put("name", mRequesterName);
+        sendRequestMap.put("userId", mRequesterId);
 
         mFirestore.collection("Users").document(mUserId)
                 .collection("LiveLocationRequests")
