@@ -100,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                         Map<String, Object> updatedInfoMap = new HashMap<>();
                                         updatedInfoMap.put("token_id", mTokenId);
-                                        updatedInfoMap.put("latitude", mLatitude);
-                                        updatedInfoMap.put("longitude", mLongitude);
+                                        updatedInfoMap.put("latitude", String.valueOf(mLatitude));
+                                        updatedInfoMap.put("longitude", String.valueOf(mLongitude));
 
                                         mFirestore.collection("Users").document(current_id).update(updatedInfoMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

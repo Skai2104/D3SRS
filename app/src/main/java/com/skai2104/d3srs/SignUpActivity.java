@@ -107,8 +107,8 @@ public class SignUpActivity extends AppCompatActivity {
                                         userMap.put("phone", mPhone);
                                         userMap.put("status", "Unknown");
                                         userMap.put("token_id", mTokenId);
-                                        userMap.put("latitude", mLatitude);
-                                        userMap.put("longitude", mLongitude);
+                                        userMap.put("latitude", String.valueOf(mLatitude));
+                                        userMap.put("longitude", String.valueOf(mLongitude));
 
                                         mFirestore.collection("Users").document(userId).set(userMap)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

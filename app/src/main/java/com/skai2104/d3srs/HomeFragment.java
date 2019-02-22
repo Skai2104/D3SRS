@@ -169,8 +169,8 @@ public class HomeFragment extends Fragment {
 
                 Map<String, Object> updateStatusMap = new HashMap<>();
                 updateStatusMap.put("datetime", dateTime);
-                updateStatusMap.put("latitude", mLatitude);
-                updateStatusMap.put("longitude", mLongitude);
+                updateStatusMap.put("latitude", String.valueOf(mLatitude));
+                updateStatusMap.put("longitude", String.valueOf(mLongitude));
                 updateStatusMap.put("status", String.valueOf(mStatusSpinner.getSelectedItem()));
 
                 mFirestore.collection("Users").document(mCurrentUserId).update(updateStatusMap)
@@ -235,8 +235,8 @@ public class HomeFragment extends Fragment {
                             statusUpdateMap.put("message", message);
                             statusUpdateMap.put("from", mCurrentUserName);
                             statusUpdateMap.put("fromId", mCurrentUserId);
-                            statusUpdateMap.put("latitude", latitude);
-                            statusUpdateMap.put("longitude", longitude);
+                            statusUpdateMap.put("latitude", String.valueOf(latitude));
+                            statusUpdateMap.put("longitude", String.valueOf(longitude));
                             statusUpdateMap.put("status", status);
                             statusUpdateMap.put("datetime", datetime);
 
@@ -275,8 +275,8 @@ public class HomeFragment extends Fragment {
                             SOSMap.put("message", message);
                             SOSMap.put("from", mCurrentUserName);
                             SOSMap.put("fromId", mCurrentUserId);
-                            SOSMap.put("latitude", mLatitude);
-                            SOSMap.put("longitude", mLongitude);
+                            SOSMap.put("latitude", String.valueOf(mLatitude));
+                            SOSMap.put("longitude", String.valueOf(mLongitude));
                             SOSMap.put("datetime", String.valueOf(dateTime));
 
                             mFirestore.collection("Users").document(userId).collection("SOSNotification")
@@ -422,8 +422,8 @@ public class HomeFragment extends Fragment {
 
                                 } else {
                                     groupMember.setStatus("Unknown");
-                                    groupMember.setLatitude(0.0);
-                                    groupMember.setLongitude(0.0);
+                                    groupMember.setLatitude("");
+                                    groupMember.setLongitude("");
                                     groupMember.setDateTime("");
 
                                 }

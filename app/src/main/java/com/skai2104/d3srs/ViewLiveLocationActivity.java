@@ -1,5 +1,8 @@
 package com.skai2104.d3srs;
 
+import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +18,12 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -26,6 +32,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.GeoApiContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -42,7 +51,7 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
     private FirebaseUser mFirebaseUser;
     private ListenerRegistration mRegistration;
 
-    private String mCurrentUserId, mName, mUserId, mStatus;
+    private String mCurrentUserId, mName, mUserId, mStatus, mLatitudeStr, mLongitudeStr;
     private Double mLatitude = 0.0, mLongitude = 0.0;
     private boolean mIsFound = false;
 
@@ -84,36 +93,59 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
         findViewById(R.id.stopBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mRegistration.remove();
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ViewLiveLocationActivity.this);
+                builder.setTitle("End Sharing Session")
+                        .setMessage("Are you sure you want to end the live location sharing session?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                stopSharing();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
             }
         });
     }
 
-    // "oNLHdC4DHF9jA5DmOx8R"
     public void getLocationUpdate() {
-        Query query = mFirestore.collection("LiveLocations");
+        Query query = mFirestore.collection("Users");
         mRegistration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.MODIFIED) {
-                            String userId = doc.getDocument().getString("userId");
-                            if (userId != null) {
-                                if (userId.equals(mUserId)) {
-                                    mIsFound = true;
+                        String docId = doc.getDocument().getId();
 
-                                    mLatitude = doc.getDocument().getDouble("latitude");
-                                    mLongitude = doc.getDocument().getDouble("longitude");
-                                    mStatus = doc.getDocument().getString("status");
+                        if (docId.equals(mUserId)) {
+                            if (doc.getType() == DocumentChange.Type.MODIFIED) {
+                                mIsFound = true;
 
-                                    break;
+                                mLatitudeStr = doc.getDocument().getString("latitude");
+                                mLongitudeStr = doc.getDocument().getString("longitude");
 
-                                } else {
-                                    mIsFound = false;
+                                if (mLatitudeStr != null) {
+                                    if (!mLatitudeStr.isEmpty()) {
+                                        mLatitude = Double.valueOf(mLatitudeStr);
+                                    }
                                 }
+
+                                if (mLongitudeStr != null) {
+                                    if (!mLongitudeStr.isEmpty()) {
+                                        mLongitude = Double.valueOf(mLongitudeStr);
+                                    }
+                                }
+                                mStatus = doc.getDocument().getString("sharing");
+
+                                break;
                             }
+                        } else {
+                            mIsFound = false;
                         }
                     }
                     if (mIsFound) {
@@ -152,6 +184,23 @@ public class ViewLiveLocationActivity extends AppCompatActivity implements OnMap
                 }
             }
         });
+    }
+
+    private void stopSharing() {
+        Map<String, Object> stopSharingMap = new HashMap<>();
+        stopSharingMap.put("sharing", "requesterStop");
+
+        mFirestore.collection("Users").document(mUserId)
+                .update(stopSharingMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            mRegistration.remove();
+                            finish();
+                        }
+                    }
+                });
     }
 
     private void initGoogleMap(Bundle savedInstanceState) {

@@ -63,8 +63,8 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
         }
 
         final String userId = mGroupList.get(position).getUserId();
-        final double latitude = mGroupList.get(position).getLatitude();
-        final double longitude = mGroupList.get(position).getLongitude();
+        final String latitude = mGroupList.get(position).getLatitude();
+        final String longitude = mGroupList.get(position).getLongitude();
         final String datetime = mGroupList.get(position).getDateTime();
         final String type = mGroupList.get(position).getType();
 

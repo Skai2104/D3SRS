@@ -35,28 +35,35 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.GeoApiContext;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class ShareLiveLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     private Toolbar mToolbar;
-    private TextView mLatitudeTV, mLongitudeTV, mShareLocationTV;
-    private LinearLayout mMainLayout, mApprovalLayout;
+    private TextView mLatitudeTV, mLongitudeTV, mShareLocationTV, mRequesterStopTV;
+    private LinearLayout mMainLayout, mApprovalLayout, mStopSharingLayout;
     private MapView mMapView;
     private RelativeLayout mProgressBarLayout;
     private Button mStopBtn;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
-    private FirebaseUser mFirebaseUser;
+    private ListenerRegistration mRegistration;
 
     private FusedLocationProviderClient mClient;
     private LocationCallback mLocationCallback;
@@ -82,10 +89,13 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
         mMapView = findViewById(R.id.mapView);
         mProgressBarLayout = findViewById(R.id.progressBarLayout);
         mStopBtn = findViewById(R.id.stopBtn);
+        mRequesterStopTV = findViewById(R.id.requesterStopTV);
+        mStopSharingLayout = findViewById(R.id.stopSharingLayout);
 
         mMainLayout.setVisibility(View.GONE);
         mApprovalLayout.setVisibility(View.VISIBLE);
         mProgressBarLayout.setVisibility(View.GONE);
+        mStopSharingLayout.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -208,80 +218,9 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
                     refreshMap(mMap);
                     markStartingLocationOnMap(mMap, new LatLng(location.getLatitude(), location.getLongitude()));
 
-                    mLiveLocationMap.put("latitude", location.getLatitude());
-                    mLiveLocationMap.put("longitude", location.getLongitude());
+                    mLiveLocationMap.put("latitude", String.valueOf(location.getLatitude()));
+                    mLiveLocationMap.put("longitude", String.valueOf(location.getLongitude()));
                     mLiveLocationMap.put("sharing", mSharing);
-
-                    /*mFirestore.collection("LiveLocations").get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if (task.getResult() != null) {
-                                            // If collection "LiveLocations" exists
-                                            // then update it
-                                            if (task.getResult().size() > 0) {
-                                                mIsFound = false;
-                                                for (DocumentSnapshot doc : task.getResult()) {
-                                                    if (doc.getString("userId").equals(mCurrentUserId)) {
-                                                        mDocId = doc.getId();
-                                                        mIsFound = true;
-                                                        break;
-                                                    } else
-                                                        mIsFound = false;
-                                                }
-                                                if (mIsFound) {
-                                                    mFirestore.collection("LiveLocations").document(mDocId)
-                                                            .update(mLiveLocationMap)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        if (mSharing.equals("stop") || mSharing.equals("rejected")) {
-                                                                            mClient.removeLocationUpdates(mLocationCallback);
-                                                                            finish();
-                                                                        }
-                                                                    }
-                                                                }
-                                                            });
-
-                                                } else {
-                                                    mLiveLocationMap.put("userId", mCurrentUserId);
-
-                                                    mFirestore.collection("LiveLocations").add(mLiveLocationMap)
-                                                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        if (mSharing.equals("stop") || mSharing.equals("rejected")) {
-                                                                            mClient.removeLocationUpdates(mLocationCallback);
-                                                                            finish();
-                                                                        }
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-
-                                            } else {
-                                                mLiveLocationMap.put("userId", mCurrentUserId);
-
-                                                mFirestore.collection("LiveLocations").add(mLiveLocationMap)
-                                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    if (mSharing.equals("stop") || mSharing.equals("rejected")) {
-                                                                        mClient.removeLocationUpdates(mLocationCallback);
-                                                                        finish();
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                            }
-                                        }
-                                    }
-                                }
-                            });*/
 
                     mFirestore.collection("Users").document(mCurrentUserId).update(mLiveLocationMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -300,7 +239,49 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
         };
 
         mClient.requestLocationUpdates(request, mLocationCallback, null);
+
+        Query query = mFirestore.collection("Users");
+        mRegistration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (queryDocumentSnapshots != null) {
+                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                        String docId = doc.getDocument().getId();
+
+                        if (docId.equals(mCurrentUserId)) {
+                            if (doc.getType() == DocumentChange.Type.MODIFIED) {
+                                mIsFound = true;
+
+                                mSharing = doc.getDocument().getString("sharing");
+
+                                break;
+                            }
+                        } else
+                            mIsFound = false;
+                    }
+                    if (mIsFound) {
+                        if (mSharing != null) {
+                            if (mSharing.equals("requesterStop")) {
+                                mMainLayout.setVisibility(View.GONE);
+                                mStopSharingLayout.setVisibility(View.VISIBLE);
+                                mRequesterStopTV.setText(mRequesterName + " has ended the sharing session");
+
+                                findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        mClient.removeLocationUpdates(mLocationCallback);
+                                        finish();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
+
+
 
     private void initGoogleMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
@@ -378,7 +359,7 @@ public class ShareLiveLocationActivity extends AppCompatActivity implements OnMa
     private void markStartingLocationOnMap(GoogleMap map, LatLng location) {
         float zoomLevel = map.getMaxZoomLevel() - 2.0f;
 
-        map.addMarker(new MarkerOptions().position(location).title("The location of him/her"));
+        map.addMarker(new MarkerOptions().position(location).title("My location"));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
 
     }

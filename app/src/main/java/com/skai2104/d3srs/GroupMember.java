@@ -3,12 +3,12 @@ package com.skai2104.d3srs;
 public class GroupMember {
     // mDatetime is the date and time where the latest status update is sent
     private String mName, mEmail, mPhone, mNickname, mUserId, mDocId, mType, mStatus, mDateTime;
-    private double mLatitude, mLongitude;
+    private String mLatitude, mLongitude;
 
     public GroupMember() {
     }
 
-    public GroupMember(String name, String email, String phone, String nickname, String userId, String docId, String type, String status, double latitude, double longitude, String datetime) {
+    public GroupMember(String name, String email, String phone, String nickname, String userId, String docId, String type, String status, String latitude, String longitude, String datetime) {
         mName = name;
         mEmail = email;
         mPhone = phone;
@@ -54,11 +54,11 @@ public class GroupMember {
         return mStatus;
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return mLatitude;
     }
 
-    public double getLongitude() {
+    public String getLongitude() {
         return mLongitude;
     }
 
@@ -98,11 +98,11 @@ public class GroupMember {
         mStatus = status;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         mLatitude = latitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(String longitude) {
         mLongitude = longitude;
     }
 

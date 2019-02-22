@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +26,20 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.GeoApiContext;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class StatusDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
@@ -37,9 +48,13 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
     private TextView mStatusTV, mLocationTV, mDateTimeTV;
     private Toolbar mToolbar;
     private MapView mMapView;
+    private ProgressBar mProgressBar;
+
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
 
     private double mLatitude = 0.0, mLongitude = 0.0;
-    private String mName, mUserId;
+    private String mName, mUserId, mRequesterName, mRequesterId;
 
     private GeoApiContext mGeoApiContext = null;
 
@@ -52,6 +67,7 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
         mLocationTV = findViewById(R.id.locationTV);
         mDateTimeTV = findViewById(R.id.dateTimeTV);
         mMapView = findViewById(R.id.mapView);
+        mProgressBar = findViewById(R.id.progressBar);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -65,6 +81,12 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
         String datetime = getIntent().getStringExtra("datetime");
 
         getSupportActionBar().setTitle(mName);
+
+        mProgressBar.setVisibility(View.GONE);
+
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mRequesterId = mAuth.getCurrentUser().getUid();
 
         if (latitudeStr != null)
             if (!latitudeStr.isEmpty())
@@ -169,6 +191,14 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
     public void onStart() {
         super.onStart();
         mMapView.onStart();
+
+        mFirestore.collection("Users").document(mRequesterId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        mRequesterName = documentSnapshot.getString("name");
+                    }
+                });
     }
 
     @Override
@@ -226,10 +256,9 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(StatusDetailsActivity.this, ViewLiveLocationActivity.class);
-                                i.putExtra("name", mName);
-                                i.putExtra("userId", mUserId);
-                                startActivity(i);
+                                mProgressBar.setVisibility(View.VISIBLE);
+
+                                sendLiveLocationRequest();
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -243,6 +272,26 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendLiveLocationRequest() {
+        Map<String, Object> sendRequestMap = new HashMap<>();
+        sendRequestMap.put("name", mRequesterName);
+
+        mFirestore.collection("Users").document(mUserId)
+                .collection("LiveLocationRequests")
+                .add(sendRequestMap)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            Intent i = new Intent(StatusDetailsActivity.this, ViewLiveLocationActivity.class);
+                            i.putExtra("name", mName);
+                            i.putExtra("userId", mUserId);
+                            startActivity(i);
+                        }
+                    }
+                });
     }
 
     public void openInGoogleMaps() {

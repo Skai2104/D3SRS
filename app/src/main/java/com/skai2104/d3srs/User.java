@@ -3,11 +3,11 @@ package com.skai2104.d3srs;
 public class User {
     // datetime is the date and time where the latest status update is sent
     String name, email, phone, userId, status, datetime;
-    private double latitude, longitude;
+    private String latitude, longitude;
 
     public User() {}
 
-    public User(String name, String email, String phone, String status, double latitude, double longitude, String datetime) {
+    public User(String name, String email, String phone, String status, String latitude, String longitude, String datetime) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -33,11 +33,11 @@ public class User {
         return status;
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
@@ -61,11 +61,11 @@ public class User {
         this.status = status;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
