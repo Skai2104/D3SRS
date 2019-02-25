@@ -77,6 +77,7 @@ public class HomeFragment extends Fragment {
     private List<GroupMember> mGroupMemberList;
     private List<GroupMember> mGroupMemberUpdatedList;
     private List<User> mUserList;
+    private List<String> mAuthIdList;
     private GroupListMainRecyclerAdapter mAdapter;
     private User mCurrentUser;
     private double mLatitude = 0.0, mLongitude = 0.0;
@@ -150,7 +151,11 @@ public class HomeFragment extends Fragment {
                 startActivity(callIntent);
 
                 for (User user : mUserList) {
-                    sendSOS(user.userId);
+                    sendSOSToUser(user.userId);
+                }
+
+                for (String authId : mAuthIdList) {
+                    sendSOSToAuth(authId);
                 }
                 Toast.makeText(getContext(), "SOS sent!", Toast.LENGTH_SHORT).show();
 
@@ -206,6 +211,7 @@ public class HomeFragment extends Fragment {
         mGroupMemberList = new ArrayList<>();
         mGroupMemberUpdatedList = new ArrayList<>();
         mUserList = new ArrayList<>();
+        mAuthIdList = new ArrayList<>();
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getUid();
@@ -257,7 +263,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void sendSOS(final String userId) {
+    public void sendSOSToUser(final String userId) {
         if (mFirebaseUser != null) {
             final String message = "Someone nearby needs your help!";
 
@@ -283,6 +289,45 @@ public class HomeFragment extends Fragment {
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+        }
+    }
+
+    public void sendSOSToAuth(final String userId) {
+        if (mFirebaseUser != null) {
+            final String message = "Someone nearby needs your help!";
+
+            mFirestore.collection("Users").document(mCurrentUserId).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT);
+                            Date date = new Date();
+                            String dateTime = df.format(date);
+
+                            mCurrentUserName = documentSnapshot.getString("name");
+
+                            Map<String, Object> SOSMap = new HashMap<>();
+                            SOSMap.put("message", message);
+                            SOSMap.put("from", mCurrentUserName);
+                            SOSMap.put("fromId", mCurrentUserId);
+                            SOSMap.put("latitude", String.valueOf(mLatitude));
+                            SOSMap.put("longitude", String.valueOf(mLongitude));
+                            SOSMap.put("datetime", dateTime);
+
+                            mFirestore.collection("Authorities").document(userId).collection("SOSNotification")
+                                    .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -436,6 +481,21 @@ public class HomeFragment extends Fragment {
                         } else {
                             mGroupListLayout.setVisibility(View.VISIBLE);
                             mAddGroupBtn.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            });
+
+            mFirestore.collection("Authorities").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (queryDocumentSnapshots != null) {
+                        for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                String authId = doc.getDocument().getId();
+
+                                mAuthIdList.add(authId);
+                            }
                         }
                     }
                 }

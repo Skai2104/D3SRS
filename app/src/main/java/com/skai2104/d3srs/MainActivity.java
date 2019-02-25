@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private double mLatitude, mLongitude;
 
     private List<User> mUserList;
+    private List<String> mAuthIdList;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -159,7 +160,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(callIntent);
 
                 for (User user : mUserList) {
-                    sendSOS(user.userId);
+                    sendSOSToUser(user.userId);
+                }
+
+                for (String authId : mAuthIdList) {
+                    sendSOSToAuth(authId);
                 }
                 Toast.makeText(MainActivity.this, "SOS sent!", Toast.LENGTH_SHORT).show();
 
@@ -168,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mUserList = new ArrayList<>();
+        mAuthIdList = new ArrayList<>();
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getUid();
@@ -229,10 +235,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            mFirestore.collection("Authorities").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (queryDocumentSnapshots != null) {
+                        for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                String authId = doc.getDocument().getId();
+
+                                mAuthIdList.add(authId);
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 
-    public void sendSOS(final String userId) {
+    public void sendSOSToUser(final String userId) {
         if (mFirebaseUser != null) {
             final String message = "Someone nearby needs your help!";
 
@@ -255,6 +276,49 @@ public class MainActivity extends AppCompatActivity {
                             SOSMap.put("datetime", dateTime);
 
                             mFirestore.collection("Users").document(userId).collection("SOSNotification")
+                                    .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+        } else {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        }
+    }
+
+    public void sendSOSToAuth(final String userId) {
+        if (mFirebaseUser != null) {
+            final String message = "Someone nearby needs your help!";
+
+            mFirestore.collection("Users").document(mCurrentUserId).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT);
+                            Date date = new Date();
+                            String dateTime = df.format(date);
+
+                            mCurrentUserName = documentSnapshot.getString("name");
+
+                            Map<String, Object> SOSMap = new HashMap<>();
+                            SOSMap.put("message", message);
+                            SOSMap.put("from", mCurrentUserName);
+                            SOSMap.put("fromId", mCurrentUserId);
+                            SOSMap.put("latitude", String.valueOf(mLatitude));
+                            SOSMap.put("longitude", String.valueOf(mLongitude));
+                            SOSMap.put("datetime", dateTime);
+
+                            mFirestore.collection("Authorities").document(userId).collection("SOSNotification")
                                     .add(SOSMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
