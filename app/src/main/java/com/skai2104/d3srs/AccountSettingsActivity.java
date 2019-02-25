@@ -18,9 +18,16 @@ public class AccountSettingsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Account Settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.editNameBtn).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+
+            }
+        });
+
+        findViewById(R.id.changePasswordBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
             }
         });

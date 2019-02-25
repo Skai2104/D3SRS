@@ -200,8 +200,15 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                                 String userId = doc.getDocument().getId();
 
                                 if (!userId.equals(mCurrentUserId)) {
-                                    User user = doc.getDocument().toObject(User.class).WithId(userId);
-                                    mUserList.add(user);
+                                    String category = doc.getDocument().getString("category");
+                                    if (category != null) {
+                                        if (!category.isEmpty()) {
+                                            if (category.equals("user")) {
+                                                User user = doc.getDocument().toObject(User.class).WithId(userId);
+                                                mUserList.add(user);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
