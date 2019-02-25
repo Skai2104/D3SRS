@@ -21,7 +21,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
         findViewById(R.id.editNameBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //finish();
             }
         });
 
