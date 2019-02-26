@@ -3,7 +3,7 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/navHome"
             android:title="Home"
-            android:icon="@mipmap/round_person_black_24"/>
+            android:icon="@mipmap/round_home_black_24"/>
 
         <item android:id="@+id/navSettings"
             android:title="Settings"
