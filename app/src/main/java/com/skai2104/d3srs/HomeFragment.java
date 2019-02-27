@@ -157,6 +157,7 @@ public class HomeFragment extends Fragment {
                 for (String authId : mAuthIdList) {
                     sendSOSToAuth(authId);
                 }
+                saveSOSToDb();
                 Toast.makeText(getContext(), "SOS sent!", Toast.LENGTH_SHORT).show();
 
                 return true;
@@ -335,6 +336,46 @@ public class HomeFragment extends Fragment {
                                     Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
+                        }
+                    });
+        }
+    }
+
+    public void saveSOSToDb() {
+        if (mFirebaseUser != null) {
+            final String message = "Someone nearby needs your help!";
+
+            mFirestore.collection("Users").document(mCurrentUserId).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT);
+                            Date date = new Date();
+                            String dateTime = df.format(date);
+
+                            mCurrentUserName = documentSnapshot.getString("name");
+
+                            Map<String, Object> saveSOSMap = new HashMap<>();
+                            saveSOSMap.put("message", message);
+                            saveSOSMap.put("from", mCurrentUserName);
+                            saveSOSMap.put("fromId", mCurrentUserId);
+                            saveSOSMap.put("latitude", String.valueOf(mLatitude));
+                            saveSOSMap.put("longitude", String.valueOf(mLongitude));
+                            saveSOSMap.put("datetime", dateTime);
+
+                            mFirestore.collection("SOS").add(saveSOSMap)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         }
                     });
         }
