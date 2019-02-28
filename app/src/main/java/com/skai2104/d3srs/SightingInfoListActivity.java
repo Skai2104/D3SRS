@@ -68,7 +68,7 @@ public class SightingInfoListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getUid();
 
-        mAdapter = new SightingInfoListRecyclerAdapter(this, mSightingInfoList, mName, mDocId);
+        mAdapter = new SightingInfoListRecyclerAdapter(this, mSightingInfoList, mName, mDocId, mCurrentUserId);
 
         mSightingInfoListRV.setHasFixedSize(true);
         mSightingInfoListRV.setLayoutManager(new LinearLayoutManager(this));

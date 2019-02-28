@@ -373,6 +373,7 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mNameET.setEnabled(false);
         mAgeET.setEnabled(false);
         mGenderET.setEnabled(false);
+        mGenderET.setVisibility(View.VISIBLE);
         mGenderSpinner.setVisibility(View.GONE);
         mLocationET.setEnabled(false);
         mAttireET.setEnabled(false);

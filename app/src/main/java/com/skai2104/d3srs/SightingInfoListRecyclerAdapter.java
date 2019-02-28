@@ -17,12 +17,14 @@ public class SightingInfoListRecyclerAdapter extends RecyclerView.Adapter<Sighti
     private Context mContext;
     private String mMissingPersonName;
     private String mMissingPersonId;
+    private String mReportPersonId;
 
-    public SightingInfoListRecyclerAdapter(Context context, List<SightingInfo> sightingInfoList, String missingPersonName, String missingPersonId) {
+    public SightingInfoListRecyclerAdapter(Context context, List<SightingInfo> sightingInfoList, String missingPersonName, String missingPersonId, String reportPersonId) {
         mSightingInfoList = sightingInfoList;
         mContext = context;
         mMissingPersonName = missingPersonName;
         mMissingPersonId = missingPersonId;
+        mReportPersonId = reportPersonId;
     }
 
     @NonNull
@@ -45,6 +47,11 @@ public class SightingInfoListRecyclerAdapter extends RecyclerView.Adapter<Sighti
         viewHolder.mDateTimeTV.setText(datetime);
         viewHolder.mContentTV.setText(content);
         viewHolder.mLocationTV.setText(location);
+
+        if (mReportPersonId.equals(reportPersonId))
+            viewHolder.mAddedByTV.setVisibility(View.VISIBLE);
+        else
+            viewHolder.mAddedByTV.setVisibility(View.GONE);
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +77,7 @@ public class SightingInfoListRecyclerAdapter extends RecyclerView.Adapter<Sighti
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
-        private TextView mDateTimeTV, mContentTV, mLocationTV;
+        private TextView mDateTimeTV, mContentTV, mLocationTV, mAddedByTV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +87,7 @@ public class SightingInfoListRecyclerAdapter extends RecyclerView.Adapter<Sighti
             mDateTimeTV = mView.findViewById(R.id.datetimeTV);
             mContentTV = mView.findViewById(R.id.contentTV);
             mLocationTV = mView.findViewById(R.id.locationTV);
+            mAddedByTV = mView.findViewById(R.id.addedByTV);
         }
     }
 }
