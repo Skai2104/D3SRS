@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (mFirebaseUser != null) {
             mUserList.clear();
+            mAuthIdList.clear();
 
             mFirestore.collection("Users").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                 @Override

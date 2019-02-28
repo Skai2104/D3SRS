@@ -21,8 +21,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:orientation="horizontal">
 
             <TextView
@@ -55,8 +55,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.6"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:orientation="horizontal">
 
             <TextView
@@ -81,8 +81,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:orientation="horizontal">
 
             <TextView
@@ -104,24 +104,19 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
         </LinearLayout>
 
-        <RelativeLayout
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="1"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp">
-
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </RelativeLayout>
+            android:layout_marginBottom="10dp"/>
 
         <Button
             android:id="@+id/openInMapsBtn"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:text="Open in Google Maps"/>
     </LinearLayout>
 

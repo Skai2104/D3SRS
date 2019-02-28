@@ -434,6 +434,7 @@ public class HomeFragment extends Fragment {
             mGroupMemberList.clear();
             mGroupMemberUpdatedList.clear();
             mUserList.clear();
+            mAuthIdList.clear();
 
             mFirestore.collection("Users")
                     .document(mCurrentUserId)
