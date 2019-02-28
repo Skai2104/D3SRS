@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendSOSToAuth(final String userId) {
         if (mFirebaseUser != null) {
-            final String message = "Someone nearby needs your help!";
+            final String message = "SOS signal from the user. Tap for more details.";
 
             mFirestore.collection("Users").document(mCurrentUserId).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void saveSOSToDb() {
         if (mFirebaseUser != null) {
-            final String message = "Someone nearby needs your help!";
+            final String message = "SOS signal from the user. Tap for more details.";
 
             mFirestore.collection("Users").document(mCurrentUserId).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
