@@ -97,17 +97,16 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     for (User user : mUserList) {
                         if (user.getPhone().equals(mPhone)) {
-                            mProgressBar.setVisibility(View.GONE);
                             mFound = true;
                             mFoundUser = user;
                             break;
                         } else {
-                            mProgressBar.setVisibility(View.GONE);
                             mFound = false;
                         }
                     }
                     
                     if (mFound) {
+                        mProgressBar.setVisibility(View.GONE);
                         for (GroupMember groupMember : mGroupMemberList) {
                             if (mPhone.equals(groupMember.getPhone())) {
                                 mAdded = true;
@@ -174,6 +173,7 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                         });
 
                     } else {
+                        mProgressBar.setVisibility(View.GONE);
                         mFoundTV.setText("User Not Found");
                         mFoundLayout.setVisibility(View.GONE);
                     }
@@ -200,15 +200,8 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                                 String userId = doc.getDocument().getId();
 
                                 if (!userId.equals(mCurrentUserId)) {
-                                    String category = doc.getDocument().getString("category");
-                                    if (category != null) {
-                                        if (!category.isEmpty()) {
-                                            if (category.equals("user")) {
-                                                User user = doc.getDocument().toObject(User.class).WithId(userId);
-                                                mUserList.add(user);
-                                            }
-                                        }
-                                    }
+                                    User user = doc.getDocument().toObject(User.class).WithId(userId);
+                                    mUserList.add(user);
                                 }
                             }
                         }
