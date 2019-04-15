@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,21 +31,23 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MissingPersonDetailsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private TextView mStatusTV;
     private Spinner mGenderSpinner;
     private EditText mNameET, mAgeET, mGenderET, mLocationET, mAttireET, mHeightET, mWeightET, mAddress1ET, mAddress2ET,
             mFacialET, mPhysicalET, mBodyET, mHabitsET, mAdditionalET, mPhoneET, mEmailET;
+    private CircleImageView mImageIV;
 
     private String mName, mAge, mGender, mLocation, mAttire, mHeight, mWeight, mAddress1, mAddress2,
-            mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReportPerson, mDocId;
+            mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReportPerson, mDocId, mImage;
     private String mCurrentUserId;
     private boolean mIsEditing = false;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
-    private FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,7 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mAdditionalET = findViewById(R.id.additionalET);
         mPhoneET = findViewById(R.id.phoneET);
         mEmailET = findViewById(R.id.emailET);
+        mImageIV = findViewById(R.id.pictureIV);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -98,6 +103,7 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mStatus = getIntent().getStringExtra("status");
         mReportPerson = getIntent().getStringExtra("reportPerson");
         mDocId = getIntent().getStringExtra("docId");
+        mImage = getIntent().getStringExtra("image");
 
         disableEdit();
 
@@ -135,6 +141,16 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mAdditionalET.setText(mAdditional);
         mPhoneET.setText(mPhone);
         mEmailET.setText(mEmail);
+
+        if (mImage != null) {
+            if (!mImage.isEmpty()) {
+                Glide.with(this)
+                        .load(mImage)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(mImageIV);
+            }
+        }
 
         disableEmptyFields();
     }

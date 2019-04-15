@@ -2,12 +2,12 @@ package com.skai2104.d3srs;
 
 public class MissingPerson {
     private String mName, mAge, mGender, mLocation, mAttire, mHeight, mWeight, mAddress1, mAddress2,
-            mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReported, mDocId;
+            mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReported, mDocId, mImage;
 
     public MissingPerson() {
     }
 
-    public MissingPerson(String name, String age, String gender, String location, String attire, String height, String weight, String address1, String address2, String facial, String physical, String body, String habits, String additional, String phone, String email, String status, String reported) {
+    public MissingPerson(String name, String age, String gender, String location, String attire, String height, String weight, String address1, String address2, String facial, String physical, String body, String habits, String additional, String phone, String email, String status, String reported, String image) {
         mName = name;
         mAge = age;
         mGender = gender;
@@ -26,6 +26,7 @@ public class MissingPerson {
         mEmail = email;
         mStatus = status;
         mReported = reported;
+        mImage = image;
     }
 
     public String getName() {
@@ -104,6 +105,10 @@ public class MissingPerson {
         return mDocId;
     }
 
+    public String getImage() {
+        return mImage;
+    }
+
     public void setName(String name) {
         mName = name;
     }
@@ -178,5 +183,9 @@ public class MissingPerson {
 
     public void setDocId(String docId) {
         mDocId = docId;
+    }
+
+    public void setImage(String image) {
+        mImage = image;
     }
 }

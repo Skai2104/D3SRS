@@ -528,7 +528,7 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            mFirestore.collection("Authorities").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            mFirestore.collection("Authorities").addSnapshotListener( new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                     if (queryDocumentSnapshots != null) {

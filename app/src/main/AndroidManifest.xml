@@ -20,40 +20,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChangeEmailActivity"></activity>
-        <activity android:name=".EditNameActivity" />
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".ViewLiveLocationActivity" />
-        <activity android:name=".ShareLiveLocationActivity">
+        <activity android:name=".ChangeEmailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".EditNameActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ChangePasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ViewLiveLocationActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ShareLiveLocationActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.skai2104.d3srs.TARGETLOCATIONNOTIFICATION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddSightingInfoActivity" />
+        <activity android:name=".AddSightingInfoActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SightingInfoDetailsActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".SightingInfoListActivity" />
+        <activity android:name=".SightingInfoListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MissingPersonDetailsActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".ReportMissingPersonActivity" />
-        <activity android:name=".AccountSettingsActivity" />
-        <activity android:name=".StatusDetailsActivity">
+        <activity android:name=".ReportMissingPersonActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".AccountSettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".StatusDetailsActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.skai2104.d3srs.TARGETSTATUSNOTIFICATION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".GroupMemberDetailsActivity" />
-        <activity android:name=".GroupListActivity" />
-        <activity android:name=".AddByPhoneNumbersActivity" />
-        <activity android:name=".AddFromExistingUsersActivity" />
-        <activity android:name=".SetUpGroupActivity" />
-        <activity android:name=".SOSDetailsActivity">
+        <activity android:name=".GroupMemberDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".GroupListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".AddByPhoneNumbersActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".AddFromExistingUsersActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SetUpGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SOSDetailsActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.skai2104.d3srs.TARGETSOSNOTIFICATION" />
 
@@ -62,16 +80,20 @@
         </activity>
         <activity
             android:name=".ProfileActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".FirebaseMessagingService">
             <intent-filter>

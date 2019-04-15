@@ -11,12 +11,12 @@
         android:padding="10dp"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/photoIV"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:background="@color/colorPrimary"/>
+            android:src="@drawable/person_icon"/>
 
         <LinearLayout
             android:layout_width="0dp"
