@@ -47,15 +47,15 @@ public class GroupListMainRecyclerAdapter extends RecyclerView.Adapter<GroupList
         if (status != null) {
             switch (status) {
                 case "Unknown":
-                    viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#B0C4DE"));
+                    viewHolder.mTypeTV.setBackgroundResource(R.drawable.status_background_unknown);
                     break;
 
                 case "Safe":
-                    viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#32CD32"));
+                    viewHolder.mTypeTV.setBackgroundResource(R.drawable.status_background_safe);
                     break;
 
                 case "Waiting for help":
-                    viewHolder.mTypeTV.setBackgroundColor(Color.parseColor("#FF8C00"));
+                    viewHolder.mTypeTV.setBackgroundResource(R.drawable.status_background_wait_help);
                     break;
             }
         } else {

@@ -74,7 +74,11 @@ public class MissingPersonListRecyclerAdapter extends RecyclerView.Adapter<Missi
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(viewHolder.mPhotoIV);
+            } else {
+                viewHolder.mPhotoIV.setImageResource(R.drawable.person_icon);
             }
+        } else {
+            viewHolder.mPhotoIV.setImageResource(R.drawable.person_icon);
         }
 
         if (reportPerson.equals(mCurrentUserId)) {

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp"
+    android:background="#ce4257"
     tools:context=".SettingsFragment">
 
     <LinearLayout
@@ -16,10 +17,12 @@
             android:id="@+id/setUpGroupBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="100dp"
             android:padding="30dp"
             android:text="Group Settings"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:background="@drawable/rounded_corner_button"/>
 
         <Button
             android:id="@+id/accountSettingsBtn"
@@ -28,7 +31,9 @@
             android:layout_marginTop="30dp"
             android:padding="30dp"
             android:text="Account Settings"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:background="@drawable/rounded_corner_button"/>
     </LinearLayout>
 
 </RelativeLayout>

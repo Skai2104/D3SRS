@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class EditNameActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private EditText mNameET;
+    private LinearLayout mProgressBarLayout;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -33,6 +35,9 @@ public class EditNameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_name);
 
         mNameET = findViewById(R.id.nameET);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressBarLayout.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -52,6 +57,8 @@ public class EditNameActivity extends AppCompatActivity {
                     mNameET.requestFocus();
 
                 } else {
+                    mProgressBarLayout.setVisibility(View.VISIBLE);
+
                     Map<String, Object> nameUpdateMap = new HashMap<>();
                     nameUpdateMap.put("name", name);
 

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class SightingInfoDetailsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private TextView mMissingPersonNameTV, mDateTimeTV, mReportedTV;
     private EditText mContentET, mLocationET;
+    private LinearLayout mProgressbarLayout;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -48,6 +50,9 @@ public class SightingInfoDetailsActivity extends AppCompatActivity {
         mReportedTV = findViewById(R.id.reportedTV);
         mContentET = findViewById(R.id.contentET);
         mLocationET = findViewById(R.id.locationET);
+        mProgressbarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressbarLayout.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -202,6 +207,8 @@ public class SightingInfoDetailsActivity extends AppCompatActivity {
                 mContent = mContentET.getText().toString().trim();
 
                 if (!hasValidationError(mLocation, mContent)) {
+                    mProgressbarLayout.setVisibility(View.VISIBLE);
+
                     Map<String, Object> updateSightingInfoMap = new HashMap<>();
                     updateSightingInfoMap.put("location", mLocation);
                     updateSightingInfoMap.put("content", mContent);
@@ -215,6 +222,8 @@ public class SightingInfoDetailsActivity extends AppCompatActivity {
                                     Toast.makeText(SightingInfoDetailsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
 
                                     disableEdit();
+
+                                    mProgressbarLayout.setVisibility(View.GONE);
                                 }
                             });
                 }

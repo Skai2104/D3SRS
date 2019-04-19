@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     tools:context=".SightingInfoListActivity">
 
     <include
@@ -28,6 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Missing Person:"
+                android:textColor="@color/colorPrimary"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
 
             <TextView
@@ -36,6 +38,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:text="John"
+                android:textColor="@color/colorPrimary"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
         </LinearLayout>
 
@@ -54,7 +57,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="There is currently no sighting info yet."/>
+        android:text="There is currently no sighting info yet."
+        android:textColor="@color/colorPrimary"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

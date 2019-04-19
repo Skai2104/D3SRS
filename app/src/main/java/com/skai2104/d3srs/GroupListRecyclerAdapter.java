@@ -43,11 +43,11 @@ public class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecy
         String color = "#B0C4DE";
         switch (type) {
             case "existing":
-                color = "#1E90FF";
+                color = "#ff7f51";
                 break;
 
             case "phone":
-                color = "#B0C4DE";
+                color = "#ffffff";
                 break;
         }
         viewHolder.mTypeTV.setBackgroundColor(Color.parseColor(color));

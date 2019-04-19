@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     tools:context=".ShareLiveLocationActivity">
 
     <include
@@ -25,42 +26,70 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/card_background">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Latitude: "
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/latitudeTV"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="0.0"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Latitude: "
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorPrimary"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:text="Longitude: "
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+                <TextView
+                    android:id="@+id/latitudeTV"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="0.0"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorPrimary"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/longitudeTV"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="0.0"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Longitude: "
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorPrimary"/>
+
+                <TextView
+                    android:id="@+id/longitudeTV"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="0.0"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorPrimary"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="8"/>
+            android:layout_weight="8"
+            android:padding="8dp"
+            android:background="@drawable/card_background">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/stopBtn"
@@ -69,7 +98,9 @@
             android:layout_weight="1"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            android:text="Stop"/>
+            android:text="Stop"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_corner_button"/>
     </LinearLayout>
 
     <LinearLayout
@@ -91,11 +122,13 @@
             android:layout_height="wrap_content"
             android:padding="40dp"
             android:gravity="center"
-            android:text="Share live location"/>
+            android:text="Share live location"
+            android:textColor="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
             <Button
@@ -103,16 +136,21 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginLeft="20dp"
                 android:text="Reject"
-                android:background="@android:color/holo_red_dark"/>
+                android:background="@drawable/rounded_corner_button_secondary"
+                android:textColor="@color/colorPrimary"/>
 
             <Button
                 android:id="@+id/shareBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:text="Share"
-                android:background="@android:color/holo_green_dark"/>
+                android:background="@drawable/rounded_corner_button"
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
 
@@ -136,7 +174,8 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:orientation="vertical"
-        android:background="@drawable/border_background" >
+        android:background="@drawable/border_background"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/requesterStopTV"
@@ -144,13 +183,19 @@
             android:layout_height="wrap_content"
             android:padding="40dp"
             android:gravity="center"
-            android:text="Requester" />
+            android:text="Requester"
+            android:textColor="@color/colorPrimary"/>
 
         <Button
             android:id="@+id/okBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OK"/>
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="OK"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_corner_button"/>
     </LinearLayout>
 
 </RelativeLayout>

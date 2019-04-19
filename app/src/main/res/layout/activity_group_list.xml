@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     tools:context=".GroupListActivity">
 
     <LinearLayout
@@ -20,7 +21,8 @@
             android:id="@+id/groupListRV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:visibility="gone">
 
 
@@ -32,7 +34,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="You have no group member yet.\nClick the add button to add your group member."/>
+        android:text="You have no group member yet.\nClick the add button to add your group member."
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorPrimary"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

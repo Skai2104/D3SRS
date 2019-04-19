@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class AddByPhoneNumbersActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private EditText mNameET, mPhoneET, mEmailET;
+    private LinearLayout mProgressBarLayout;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -41,6 +43,9 @@ public class AddByPhoneNumbersActivity extends AppCompatActivity {
         mNameET = findViewById(R.id.nameET);
         mPhoneET = findViewById(R.id.phoneET);
         mEmailET = findViewById(R.id.emailET);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressBarLayout.setVisibility(View.GONE);
 
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -49,6 +54,8 @@ public class AddByPhoneNumbersActivity extends AppCompatActivity {
         findViewById(R.id.saveBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProgressBarLayout.setVisibility(View.VISIBLE);
+
                 String name = mNameET.getText().toString().trim();
                 String phone = mPhoneET.getText().toString().trim();
                 String email = mEmailET.getText().toString().trim();

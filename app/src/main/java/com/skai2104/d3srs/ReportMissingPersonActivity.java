@@ -162,45 +162,50 @@ public class ReportMissingPersonActivity extends AppCompatActivity {
                     collectionReference.add(reportMissingMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            mReportDocId = documentReference.getId();
-                            final StorageReference mpReport = mStorage.child(mReportDocId + ".jpg");
+                            if (mImageUri != null) {
+                                mReportDocId = documentReference.getId();
+                                final StorageReference mpReport = mStorage.child(mReportDocId + ".jpg");
 
-                            UploadTask uploadTask = mpReport.putFile(mImageUri);
+                                UploadTask uploadTask = mpReport.putFile(mImageUri);
 
-                            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                    if (!task.isSuccessful()) {
-                                        throw task.getException();
+                                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                    @Override
+                                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                        if (!task.isSuccessful()) {
+                                            throw task.getException();
+                                        }
+
+                                        // Continue with the task to get the download URL
+                                        return mpReport.getDownloadUrl();
                                     }
+                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri downloadUri = task.getResult();
+                                            String downloadUrl = downloadUri.toString();
 
-                                    // Continue with the task to get the download URL
-                                    return mpReport.getDownloadUrl();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri downloadUri = task.getResult();
-                                        String downloadUrl = downloadUri.toString();
+                                            Map<String, Object> mpPicMap = new HashMap<>();
+                                            mpPicMap.put("image", downloadUrl);
 
-                                        Map<String, Object> mpPicMap = new HashMap<>();
-                                        mpPicMap.put("image", downloadUrl);
+                                            mFirestore.collection("MissingPersons").document(mReportDocId).update(mpPicMap)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(ReportMissingPersonActivity.this, "Report is submitted successfully!", Toast.LENGTH_SHORT).show();
+                                                            finish();
+                                                        }
+                                                    });
 
-                                        mFirestore.collection("MissingPersons").document(mReportDocId).update(mpPicMap)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Toast.makeText(ReportMissingPersonActivity.this, "Report is submitted successfully!", Toast.LENGTH_SHORT).show();
-                                                        finish();
-                                                    }
-                                                });
-
-                                    } else {
-                                        Toast.makeText(ReportMissingPersonActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(ReportMissingPersonActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                Toast.makeText(ReportMissingPersonActivity.this, "Report is submitted successfully!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -257,8 +262,10 @@ public class ReportMissingPersonActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE) {
-            mImageUri = data.getData();
-            mPictureIV.setImageURI(mImageUri);
+            if (data != null) {
+                mImageUri = data.getData();
+                mPictureIV.setImageURI(mImageUri);
+            }
         }
     }
 

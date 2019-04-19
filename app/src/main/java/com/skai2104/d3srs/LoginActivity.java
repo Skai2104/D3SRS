@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText mEmailET, mPasswordET;
-    private ProgressBar mProgressBar;
+    private LinearLayout mProgressBarLayout;
 
     private String mTokenId;
     private double mLatitude, mLongitude;
@@ -54,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmailET = findViewById(R.id.emailET);
         mPasswordET = findViewById(R.id.passwordET);
-        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
 
-        mProgressBar.setVisibility(View.INVISIBLE);
+        mProgressBarLayout.setVisibility(View.INVISIBLE);
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
@@ -85,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = mPasswordET.getText().toString().trim();
 
         if (!hasValidationError(email, password)) {
-            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBarLayout.setVisibility(View.VISIBLE);
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -115,11 +116,11 @@ public class LoginActivity extends AppCompatActivity {
                                 });
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                                    mProgressBar.setVisibility(View.INVISIBLE);
+                                    mProgressBarLayout.setVisibility(View.INVISIBLE);
                                     Toast.makeText(LoginActivity.this, "Invalid user", Toast.LENGTH_SHORT).show();
 
                                 } else {
-                                    mProgressBar.setVisibility(View.INVISIBLE);
+                                    mProgressBarLayout.setVisibility(View.INVISIBLE);
                                     Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -193,6 +194,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        mEmailET.setText("");
+        mPasswordET.setText("");
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 

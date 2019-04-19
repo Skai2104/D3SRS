@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     tools:context=".SetUpGroupActivity">
 
     <LinearLayout
@@ -19,7 +20,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="26dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
             android:orientation="vertical">
 
             <Button
@@ -28,14 +31,17 @@
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 android:text="Add from existing users"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_corner_button"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:text="Note: If your group members already register themselves in this system, kindly choose this option as they can receive your status updates via both push notifications and SMS."
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"/>
 
             <View
                 style="@style/HorizontalDivider"
@@ -48,14 +54,17 @@
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 android:text="Add by phone numbers"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_corner_button"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:text="Note: They will only receive your status update via SMS because they have yet to register themselves in this system."
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

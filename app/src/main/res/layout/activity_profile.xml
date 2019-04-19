@@ -4,6 +4,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ProfileActivity">
 
@@ -38,6 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_margin="15dp"
-            android:text="Logout"/>
+            android:text="Logout"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_corner_button"/>
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

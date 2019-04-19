@@ -96,18 +96,18 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
             if (!longitudeStr.isEmpty())
                 mLongitude = Double.valueOf(longitudeStr);
 
-        String color = "#B0C4DE";
+        int statusBackground = R.drawable.status_background_unknown;
         switch (status) {
             case "Unknown":
-                color = "#B0C4DE";
+                statusBackground = R.drawable.status_background_unknown;
                 break;
 
             case "Safe":
-                color = "#32CD32";
+                statusBackground = R.drawable.status_background_safe;
                 break;
 
             case "Waiting for help":
-                color = "#FF8C00";
+                statusBackground = R.drawable.status_background_wait_help;
                 break;
         }
 
@@ -138,7 +138,7 @@ public class StatusDetailsActivity extends AppCompatActivity implements OnMapRea
         }
 
         mStatusTV.setText(status);
-        mStatusTV.setBackgroundColor(Color.parseColor(color));
+        mStatusTV.setBackgroundResource(statusBackground);
         mLocationTV.setText(address);
         mDateTimeTV.setText(datetime);
         mLocationTV.setMovementMethod(new ScrollingMovementMethod());

@@ -139,7 +139,7 @@ public class MissingPersonsFragment extends Fragment {
                         MissingPerson missingPerson = new MissingPerson();
                         if (!searchName.isEmpty()) {
                             for (MissingPerson person : mMissingPersonList) {
-                                if (person.getName().equals(searchName)) {
+                                if (person.getName().toLowerCase().equals(searchName.toLowerCase())) {
                                     missingPerson = person;
                                     isFound = true;
                                     break;

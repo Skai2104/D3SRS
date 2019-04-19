@@ -20,9 +20,12 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
     private TextView mNameTV, mEmailTV;
+    private ImageView mProfilePicIV;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -55,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         mNameTV = header.findViewById(R.id.nameTV);
         mEmailTV = header.findViewById(R.id.emailTV);
+        mProfilePicIV = header.findViewById(R.id.profilePicIV);
 
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mToolbar = findViewById(R.id.nav_action_bar);
@@ -198,9 +203,20 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         mUserName = documentSnapshot.getString("name");
                         mUserEmail = documentSnapshot.getString("email");
+                        String imageUrl = documentSnapshot.getString("image");
 
                         mNameTV.setText(mUserName);
                         mEmailTV.setText(mUserEmail);
+
+                        if (imageUrl != null) {
+                            if (!imageUrl.isEmpty()) {
+                                Glide.with(ProfileActivity.this)
+                                        .load(imageUrl)
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .skipMemoryCache(true)
+                                        .into(mProfilePicIV);
+                            }
+                        }
                     }
                 });
     }

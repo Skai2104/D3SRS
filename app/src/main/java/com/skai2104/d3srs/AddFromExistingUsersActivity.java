@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,9 +37,10 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private EditText mPhoneET, mNicknameET;
     private ProgressBar mProgressBar;
-    private TextView mFoundTV, mNameTV, mEmailTV, mPhoneTV;
-    private LinearLayout mFoundLayout;
+    private TextView mFoundTV, mNameTV, mEmailTV, mPhoneTV, mNotFoundTV;
+    private RelativeLayout mFoundLayout;
     private Button mAddBtn;
+    private LinearLayout mProgressBarLayout;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -67,6 +69,10 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
         mPhoneTV = findViewById(R.id.phoneTV);
         mNicknameET = findViewById(R.id.nicknameET);
         mAddBtn = findViewById(R.id.addBtn);
+        mNotFoundTV = findViewById(R.id.notFoundTV);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressBarLayout.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -81,10 +87,28 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
 
         mProgressBar.setVisibility(View.GONE);
         mFoundLayout.setVisibility(View.GONE);
+        mNotFoundTV.setVisibility(View.GONE);
         mFoundTV.setText("");
         mNicknameET.setText("");
         mFound = false;
         mAdded = false;
+
+        mPhoneET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mNotFoundTV.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         findViewById(R.id.searchBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +163,8 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                         mAddBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                mProgressBarLayout.setVisibility(View.VISIBLE);
+
                                 String nickname = mNicknameET.getText().toString().trim();
 
                                 Map<String, Object> groupMemberMap = new HashMap<>();
@@ -156,11 +182,15 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                             @Override
                                             public void onSuccess(DocumentReference documentReference) {
+                                                mProgressBarLayout.setVisibility(View.GONE);
+
                                                 Toast.makeText(AddFromExistingUsersActivity.this, "Group member added successfully!", Toast.LENGTH_SHORT).show();
                                                 mAddBtn.setEnabled(false);
                                                 mAddBtn.setText("ADDED");
                                                 mNicknameET.setEnabled(false);
                                                 resetGroupMemberList();
+
+                                                finish();
                                             }
                                         })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -176,6 +206,7 @@ public class AddFromExistingUsersActivity extends AppCompatActivity {
                         mProgressBar.setVisibility(View.GONE);
                         mFoundTV.setText("User Not Found");
                         mFoundLayout.setVisibility(View.GONE);
+                        mNotFoundTV.setVisibility(View.VISIBLE);
                     }
                 }
             }

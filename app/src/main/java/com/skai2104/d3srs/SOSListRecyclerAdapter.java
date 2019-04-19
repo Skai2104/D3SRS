@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -63,6 +64,7 @@ public class SOSListRecyclerAdapter extends RecyclerView.Adapter<SOSListRecycler
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
         private TextView mNameTV, mLocationTV, mDateTimeTV;
+        private RelativeLayout mSosListItemLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +74,7 @@ public class SOSListRecyclerAdapter extends RecyclerView.Adapter<SOSListRecycler
             mNameTV = mView.findViewById(R.id.sosNameTV);
             mLocationTV = mView.findViewById(R.id.locationTV);
             mDateTimeTV = mView.findViewById(R.id.dateTimeTV);
+            mSosListItemLayout = mView.findViewById(R.id.sosListItemLayout);
         }
     }
 }

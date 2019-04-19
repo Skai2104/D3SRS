@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class AddSightingInfoActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private TextView mNameTV;
     private EditText mContentET, mLocationET;
+    private LinearLayout mProgressBarLayout;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -44,6 +46,9 @@ public class AddSightingInfoActivity extends AppCompatActivity {
         mNameTV = findViewById(R.id.nameTV);
         mContentET = findViewById(R.id.contentET);
         mLocationET = findViewById(R.id.locationET);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressBarLayout.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -134,6 +139,8 @@ public class AddSightingInfoActivity extends AppCompatActivity {
             final String content = mContentET.getText().toString().trim();
 
             if (!hasValidationError(location, content)) {
+                mProgressBarLayout.setVisibility(View.VISIBLE);
+
                 mFirestore.collection("Users").document(mCurrentUserId).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override

@@ -112,21 +112,21 @@ public class HomeFragment extends Fragment {
         mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String color = "#B0C4DE";
+                int statusBackground = R.drawable.status_background_unknown;
                 switch (position) {
                     case 0:
-                        color = "#B0C4DE";
+                        statusBackground = R.drawable.status_background_unknown;
                         break;
 
                     case 1:
-                        color = "#32CD32";
+                        statusBackground = R.drawable.status_background_safe;
                         break;
 
                     case 2:
-                        color = "#FF8C00";
+                        statusBackground = R.drawable.status_background_wait_help;
                         break;
                 }
-                mSpinnerLayout.setBackgroundColor(Color.parseColor(color));
+                mSpinnerLayout.setBackgroundResource(statusBackground);
             }
 
             @Override
@@ -472,25 +472,25 @@ public class HomeFragment extends Fragment {
                                 } else if (userId.equals(mCurrentUserId)) {
                                     mCurrentUser = user;
                                     int position = 0;
-                                    String color = "#B0C4DE";
+                                    int statusBackground = R.drawable.status_background_unknown;
                                     switch (mCurrentUser.getStatus()) {
                                         case "Unknown":
                                             position = 0;
-                                            color = "#B0C4DE";
+                                            statusBackground = R.drawable.status_background_unknown;
                                             break;
 
                                         case "Safe":
                                             position = 1;
-                                            color = "#32CD32";
+                                            statusBackground = R.drawable.status_background_safe;
                                             break;
 
                                         case "Waiting for help":
                                             position = 2;
-                                            color = "#FF8C00";
+                                            statusBackground = R.drawable.status_background_wait_help;
                                             break;
                                     }
                                     mStatusSpinner.setSelection(position);
-                                    mSpinnerLayout.setBackgroundColor(Color.parseColor(color));
+                                    mSpinnerLayout.setBackgroundResource(statusBackground);
                                 }
                                 mAdapter.notifyDataSetChanged();
                             }

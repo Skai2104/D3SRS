@@ -2,7 +2,9 @@ package com.skai2104.d3srs;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,12 +16,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +32,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,20 +42,26 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MissingPersonDetailsActivity extends AppCompatActivity {
+    private static final int PICK_IMAGE = 444;
+
     private Toolbar mToolbar;
     private TextView mStatusTV;
     private Spinner mGenderSpinner;
     private EditText mNameET, mAgeET, mGenderET, mLocationET, mAttireET, mHeightET, mWeightET, mAddress1ET, mAddress2ET,
             mFacialET, mPhysicalET, mBodyET, mHabitsET, mAdditionalET, mPhoneET, mEmailET;
     private CircleImageView mImageIV;
+    private RelativeLayout mSpinnerLayout;
+    private LinearLayout mProgressBarLayout;
 
     private String mName, mAge, mGender, mLocation, mAttire, mHeight, mWeight, mAddress1, mAddress2,
             mFacial, mPhysical, mBody, mHabits, mAdditional, mPhone, mEmail, mStatus, mReportPerson, mDocId, mImage;
     private String mCurrentUserId;
-    private boolean mIsEditing = false;
+    private boolean mIsEditing = false, mChangedPic = false;
+    private Uri mImageUri;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
+    private StorageReference mStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +87,10 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mPhoneET = findViewById(R.id.phoneET);
         mEmailET = findViewById(R.id.emailET);
         mImageIV = findViewById(R.id.pictureIV);
+        mSpinnerLayout = findViewById(R.id.spinnerLayout);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressBarLayout.setVisibility(View.GONE);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -80,9 +98,12 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
 
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance().getReference().child("images");
         mCurrentUserId = mAuth.getUid();
         
         mIsEditing = false;
+        mChangedPic = false;
+        mImageIV.setEnabled(false);
 
         mName = getIntent().getStringExtra("name");
         mAge = getIntent().getStringExtra("age");
@@ -153,6 +174,16 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         }
 
         disableEmptyFields();
+
+        mImageIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i, "Select Picture"), PICK_IMAGE);
+            }
+        });
     }
 
     private void disableEmptyFields() {
@@ -313,6 +344,8 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
                 mEmail = mEmailET.getText().toString().trim();
 
                 if (!hasValidationError(mName, mAge, mHeight, mWeight, mPhone, mEmail)) {
+                    mProgressBarLayout.setVisibility(View.VISIBLE);
+
                     Map<String, Object> updateMissingReportMap = new HashMap<>();
                     updateMissingReportMap.put("name", mName);
                     updateMissingReportMap.put("age", mAge);
@@ -337,12 +370,28 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(MissingPersonDetailsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                                    
-                                    mGenderET.setText(mGender);
-                                    mGenderET.setVisibility(View.VISIBLE);
-                                    disableEmptyFields();
-                                    disableEdit();
+                                    boolean b = false;
+                                    if (mImage != null) {
+                                        if (!mImage.isEmpty()) {
+                                            StorageReference imageRef = mStorage.getStorage().getReferenceFromUrl(mImage);
+                                            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    saveMpPic();
+                                                }
+                                            });
+                                        } else {
+                                            b = true;
+                                        }
+                                    } else {
+                                        b = true;
+                                    }
+
+                                    if (b) {
+                                        if (mChangedPic) {
+                                            saveMpPic();
+                                        }
+                                    }
                                 }
                             });
                 }
@@ -350,6 +399,49 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveMpPic() {
+        final StorageReference profilePic = mStorage.child(mDocId + ".jpg");
+
+        UploadTask uploadTask = profilePic.putFile(mImageUri);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return profilePic.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    String downloadUrl = downloadUri.toString();
+
+                    Map<String, Object> profilePicMap = new HashMap<>();
+                    profilePicMap.put("image", downloadUrl);
+
+                    mFirestore.collection("MissingPersons").document(mDocId).update(profilePicMap)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(MissingPersonDetailsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+
+                                    mGenderET.setText(mGender);
+                                    mGenderET.setVisibility(View.VISIBLE);
+                                    disableEmptyFields();
+                                    disableEdit();
+                                    mProgressBarLayout.setVisibility(View.GONE);
+                                }
+                            });
+                }
+            }
+        });
     }
 
     @Override
@@ -390,7 +482,7 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mAgeET.setEnabled(false);
         mGenderET.setEnabled(false);
         mGenderET.setVisibility(View.VISIBLE);
-        mGenderSpinner.setVisibility(View.GONE);
+        mSpinnerLayout.setVisibility(View.GONE);
         mLocationET.setEnabled(false);
         mAttireET.setEnabled(false);
         mHeightET.setEnabled(false);
@@ -404,6 +496,7 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mAdditionalET.setEnabled(false);
         mPhoneET.setEnabled(false);
         mEmailET.setEnabled(false);
+        mImageIV.setEnabled(false);
     }
 
     public void enableEdit() {
@@ -413,7 +506,7 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mNameET.setEnabled(true);
         mAgeET.setEnabled(true);
         mGenderET.setVisibility(View.GONE);
-        mGenderSpinner.setVisibility(View.VISIBLE);
+        mSpinnerLayout.setVisibility(View.VISIBLE);
 
         if (mGender.equals("Male"))
             mGenderSpinner.setSelection(0);
@@ -433,5 +526,20 @@ public class MissingPersonDetailsActivity extends AppCompatActivity {
         mAdditionalET.setEnabled(true);
         mPhoneET.setEnabled(true);
         mEmailET.setEnabled(true);
+        mImageIV.setEnabled(true);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE) {
+            if (data != null) {
+                mImageUri = data.getData();
+                mImageIV.setImageURI(mImageUri);
+
+                mChangedPic = true;
+            }
+        }
     }
 }

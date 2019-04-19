@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     tools:context=".AddFromExistingUsersActivity">
 
     <LinearLayout
@@ -19,57 +20,69 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="46dp"
+            android:layout_marginTop="30dp"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Please enter the phone number to search:"
-                android:textAlignment="center"/>
 
             <EditText
                 android:id="@+id/phoneET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:gravity="center"
-                android:inputType="phone"/>
+                android:inputType="phone"
+                android:hint="Enter the phone number to search"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:background="@drawable/input_background"/>
 
             <Button
                 android:id="@+id/searchBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Search"/>
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="Search"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_corner_button"/>
 
             <RelativeLayout
+                android:id="@+id/foundLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/card_background"
+                android:visibility="visible">
 
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
 
                 <TextView
                     android:id="@+id/foundTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
                     android:gravity="center"
                     android:text="Found user:"
+                    android:textColor="@color/colorPrimary"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
 
                 <LinearLayout
-                    android:id="@+id/foundLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/foundTV"
                     android:layout_marginTop="10dp"
                     android:padding="10dp"
-                    android:background="@drawable/border_background"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -80,8 +93,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="1.2"
+                            android:padding="5dp"
                             android:text="Name:"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
                         <TextView
@@ -89,7 +104,9 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="3"
+                            android:padding="5dp"
                             android:text="name"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -103,8 +120,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="1.2"
+                            android:padding="5dp"
                             android:text="Email:"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
                         <TextView
@@ -112,7 +131,9 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="3"
+                            android:padding="5dp"
                             android:text="email"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -126,8 +147,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="1.2"
+                            android:padding="5dp"
                             android:text="Phone:"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
                         <TextView
@@ -135,7 +158,9 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="3"
+                            android:padding="5dp"
                             android:text="phone number"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -153,8 +178,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="1.2"
+                            android:padding="5dp"
                             android:text="Nickname:"
+                            android:textColor="@color/colorPrimary"
                             android:gravity="center_vertical"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
@@ -164,18 +191,73 @@
                             android:layout_height="match_parent"
                             android:layout_weight="3"
                             android:inputType="textPersonName"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
                             android:hint="(optional)"
+                            android:textColor="@color/colorPrimary"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:background="@drawable/input_background_gray"/>
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/addBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Add"/>
+                        android:layout_marginTop="10dp"
+                        android:text="Add"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/rounded_corner_button"/>
                 </LinearLayout>
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/notFoundTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:paddingTop="40dp"
+                android:paddingBottom="40dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:gravity="center"
+                android:text="User not found"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorPrimary"
+                android:background="@drawable/card_background"
+                android:visibility="visible"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressBarLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:background="@drawable/progress_bar_background"
+        android:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="Adding..."
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
     </LinearLayout>
 </RelativeLayout>

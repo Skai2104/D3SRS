@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class GroupMemberDetailsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
-    private LinearLayout mNicknameLayout;
+    private LinearLayout mNicknameLayout, mProgressBarLayout;
     private EditText mNameET, mNicknameET, mEmailET, mPhoneET;
 
     private String mDocId, mName, mEmail, mPhone, mNickname, mType;
@@ -51,6 +51,9 @@ public class GroupMemberDetailsActivity extends AppCompatActivity {
         mNicknameET = findViewById(R.id.nicknameET);
         mEmailET = findViewById(R.id.emailET);
         mPhoneET = findViewById(R.id.phoneET);
+        mProgressBarLayout = findViewById(R.id.progressBarLayout);
+
+        mProgressBarLayout.setVisibility(View.GONE);
 
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -112,6 +115,8 @@ public class GroupMemberDetailsActivity extends AppCompatActivity {
                     }
                 }
                 if (!mHasError) {
+                    mProgressBarLayout.setVisibility(View.VISIBLE);
+
                     mFirestore.collection("Users")
                             .document(mCurrentUserId)
                             .collection("Group")

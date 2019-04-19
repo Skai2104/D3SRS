@@ -3,113 +3,146 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="10dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:background="#ce4257"
     tools:context=".HomeFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:scrollbars="none">
 
-        <Button
-            android:id="@+id/sendSOSBtn"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hold to send SOS"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:background="@android:color/holo_red_dark"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <View
-            style="@style/HorizontalDivider"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="16dp"
+                android:padding="2dp"
+                android:background="@drawable/card_background">
+
+                <Button
+                    android:id="@+id/sendSOSBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="Hold to send SOS"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:background="@drawable/rounded_sos_button"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/card_background">
+
+                <LinearLayout
+                    android:id="@+id/statusLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/myStatusTV"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:layout_gravity="center"
+                        android:text="My Safety Status:"
+                        android:textColor="@color/colorPrimary"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+                    <RelativeLayout
+                        android:id="@+id/spinnerLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="10dp">
+
+                        <Spinner
+                            android:id="@+id/statusSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:textAlignment="center"
+                            android:gravity="center" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/sendStatusBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_below="@+id/statusLayout"
+                    android:background="@drawable/rounded_corner_button"
+                    android:padding="15dp"
+                    android:text="Send to group members"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/card_background">
 
                 <TextView
-                    android:id="@+id/myStatusTV"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:id="@+id/groupTV"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="My Safety Status:"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+                    android:text="My Group"
+                    android:textColor="@color/colorPrimary"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
                 <RelativeLayout
-                    android:id="@+id/spinnerLayout"
-                    android:layout_width="0dp"
+                    android:id="@+id/groupListLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_below="@+id/groupTV"
+                    android:visibility="gone">
 
-                    <Spinner
-                        android:id="@+id/statusSpinner"
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/groupListRV"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:gravity="center" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="0dp">
+
+
+                    </android.support.v7.widget.RecyclerView>
                 </RelativeLayout>
-            </LinearLayout>
-        </RelativeLayout>
 
-        <Button
-            android:id="@+id/sendStatusBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Send to group members"
-            android:textStyle="bold"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
-
-        <View
-            style="@style/HorizontalDivider"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="My Group"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
-
-        <RelativeLayout
-            android:id="@+id/groupListLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:visibility="gone">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/groupListRV"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
-
-
-            </android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/addGroupBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Click here to add group member"
-            android:visibility="gone"/>
-    </LinearLayout>
+                <Button
+                    android:id="@+id/addGroupBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@+id/groupTV"
+                    android:text="Click here to add group member"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/rounded_corner_button"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

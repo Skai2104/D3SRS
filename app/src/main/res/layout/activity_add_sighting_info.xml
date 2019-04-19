@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ce4257"
     tools:context=".AddSightingInfoActivity">
 
     <include
@@ -35,6 +36,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Missing Person:"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
 
                 <TextView
@@ -43,6 +46,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:text="John"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
             </LinearLayout>
 
@@ -52,6 +57,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"
                 android:text="Sighting Location:"
+                android:textColor="@color/colorPrimary"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
             <EditText
@@ -63,6 +69,7 @@
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:hint="(required)"
+                android:textColor="@color/colorPrimary"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
@@ -76,6 +83,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"
                 android:text="Sighting Info:"
+                android:textColor="@color/colorPrimary"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
             <EditText
@@ -87,6 +95,7 @@
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:hint="(required)"
+                android:textColor="@color/colorPrimary"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
@@ -95,5 +104,33 @@
                 android:scrollHorizontally="false"/>
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/progressBarLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:background="@drawable/progress_bar_background"
+        android:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="Saving..."
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+    </LinearLayout>
 
 </RelativeLayout>
