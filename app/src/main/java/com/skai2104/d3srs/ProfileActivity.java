@@ -35,13 +35,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
     private TextView mNameTV, mEmailTV;
-    private ImageView mProfilePicIV;
+    private CircleImageView mProfilePicIV;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;

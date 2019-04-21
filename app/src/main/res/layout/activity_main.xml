@@ -7,6 +7,16 @@
     android:background="#ce4257"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="D3SRS"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"/>
+
     <ImageView
         android:layout_width="304dp"
         android:layout_height="304dp"
