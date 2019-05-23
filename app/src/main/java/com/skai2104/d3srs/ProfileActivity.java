@@ -80,7 +80,9 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
-        mUserId = mAuth.getCurrentUser().getUid();
+        if (mAuth.getCurrentUser() != null) {
+            mUserId = mAuth.getCurrentUser().getUid();
+        }
 
         findViewById(R.id.logoutBtn).setOnClickListener(new View.OnClickListener() {
             @Override

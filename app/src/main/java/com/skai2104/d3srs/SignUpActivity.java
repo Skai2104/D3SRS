@@ -224,6 +224,11 @@ public class SignUpActivity extends AppCompatActivity {
             mPasswordET.setError("Password required");
             mPasswordET.requestFocus();
             return true;
+
+        } else if (password.length() < 6 || password.length() > 30) {
+            mPasswordET.setError("Password length should be between 6 to 30");
+            mPasswordET.requestFocus();
+            return true;
         }
 
         if (phone.isEmpty()) {
