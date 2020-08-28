@@ -8,9 +8,9 @@ Disaster Safety Status Self-Reporting System (D3SRS) is an Android mobile applic
 4. Share live location
 5. Push notification
 
-
-- Tools: Android Studio (Java)
-- Backend: Firebase
+### Tools & Platforms
+- Android Studio (Java)
+- Firebase
 
 ### Feature Highlights
 
