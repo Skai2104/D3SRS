@@ -21,5 +21,4 @@ Feature Highlights:
 
 2. The user can update their safeaty status and their added group members will receive the status update via push notification and SMS.
 
-<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/safety_status.jpg" width="150">
-<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/status_notification.jpg" width="150">
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/safety_status.jpg" width="150"><img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/status_notification.jpg" width="150">
