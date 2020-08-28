@@ -15,6 +15,10 @@ Key features:
 Feature Highlights:
 
 
-The user can send SOS alerts to the authorities and dial emergency number.
+1. The user can send SOS alerts to the authorities and dial emergency number.
 
 <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/start_screen.jpg" width="150">
+
+2. The user can update their safeaty status.
+
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/safety_status.jpg" width="150">
