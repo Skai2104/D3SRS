@@ -14,5 +14,4 @@ Key features:
 
 Feature Highlights:
 
-![Send SOS](https://github.com/Skai2104/D3SRS/blob/master/Screenshots/start_screen.jpg) <!-- .element width="10%" -->
-<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/start_screen.jpg" width="48">
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/start_screen.jpg" width="100">
