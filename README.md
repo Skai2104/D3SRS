@@ -30,3 +30,7 @@ Disaster Safety Status Self-Reporting System (D3SRS) is an Android mobile applic
 4. The user can request and share the live (real-time) location to each other.
 
 <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/request_live_location.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/share_reject_live_location.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/live_location.png" width="150">
+
+5. User account management.
+
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/registration.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/login.png" width="150">
