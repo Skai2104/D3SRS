@@ -1,9 +1,14 @@
 # D3SRS
-This is my Final Year Project. D3SRS stands for Disaster Safety Status Self-Reporting System.
+Disaster Safety Status Self-Reporting System (D3SRS) is an Android mobile application to let the users to send a SOS request to the authorities and update their safety status when they got involved in a disaster/incident. This app also provides many more useful features for the authorites, family members and friends to keep track of the status of the victims.
 
-This system wil have the following functionalities:
+Key features:
 1. Send SOS
 2. Report safety status
 3. Report missing person
 4. Share live location
-5. Etc.
+5. Push notification
+
+Tools: Android Studio (Java)
+Backend: Firebase
+
+
