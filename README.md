@@ -16,4 +16,5 @@ Feature Highlights:
 
 
 The user can send SOS alerts to the authorities and dial emergency number.
+
 <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/start_screen.jpg" width="150">
