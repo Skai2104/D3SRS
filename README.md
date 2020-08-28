@@ -13,4 +13,5 @@ Key features:
 - Backend: Firebase
 
 Feature Highlights:
+
 ![Send SOS](https://github.com/Skai2104/D3SRS/blob/master/Screenshots/start_screen.jpg)
