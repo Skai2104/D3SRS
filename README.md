@@ -22,3 +22,7 @@ Feature Highlights:
 2. The user can update their safeaty status and their added group members will receive the status update via push notification and SMS.
 
 <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/safety_status.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/status_notification.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/sms.png" width="150">
+
+3. The user can report for missing person if they didn't heard from their closed ones from the disaster areas.
+
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/report_missing_person.png" width="150">
