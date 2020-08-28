@@ -25,4 +25,4 @@ Feature Highlights:
 
 3. The user can report for missing person if they didn't heard from their closed ones from the disaster areas and other users can provide sighting information about the missing persons.
 
-<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/report_missing_person.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/missing_person_details.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/add_sighting_info.png" width="150"> 
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/report_missing_person.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/missing_person_details.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/add_sighting_info.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/sighting_info_list.png" width="150">
