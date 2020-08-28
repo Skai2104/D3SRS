@@ -9,6 +9,7 @@ Key features:
 5. Push notification
 
 Tools: Android Studio (Java)
+
 Backend: Firebase
 
 
