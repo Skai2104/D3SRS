@@ -26,3 +26,7 @@ Disaster Safety Status Self-Reporting System (D3SRS) is an Android mobile applic
 3. The user can report for missing person if they didn't heard from their closed ones from the disaster areas and other users can provide sighting information about the missing persons.
 
 <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/report_missing_person.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/missing_person_details.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/add_sighting_info.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/sighting_info_list.png" width="150">
+
+4. The user can request and share the live (real-time) location to each other.
+
+<img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/request_live_location.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/share_reject_live_location.png" width="150"> <img src="https://github.com/Skai2104/D3SRS/blob/master/Screenshots/live_location.png" width="150">
