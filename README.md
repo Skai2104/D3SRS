@@ -8,7 +8,7 @@ Key features:
 4. Share live location
 5. Push notification
 
-Tools: Android Studio (Java)
-Backend: Firebase
+- Tools: Android Studio (Java)
+- Backend: Firebase
 
 
